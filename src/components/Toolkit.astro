@@ -1,0 +1,27 @@
+---
+import { skillGroups } from '../data/content.js';
+---
+
+<section class="toolkit section" id="toolkit" aria-labelledby="toolkit-title">
+  <p class="kicker mono"><span>(04)</span><span>Toolkit</span><span>Things I actually know how to use</span></p>
+
+  <h2 class="visually-hidden" id="toolkit-title">Toolkit</h2>
+
+  <div class="toolkit__groups">
+    {
+      skillGroups.map((g, gi) => (
+        <div class="group" data-group>
+          <h3 class="group__title mono">({String.fromCharCode(65 + gi)}) {g.title}</h3>
+          <ul class="group__list">
+            {g.items.map((s) => (
+              <li class="tool" data-tool>
+                <span class="tool__name"><span data-tool-name>{s.name}</span></span>
+                <span class="tool__note mono" data-tool-note>{s.note}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

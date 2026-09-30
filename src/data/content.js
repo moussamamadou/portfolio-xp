@@ -1,5 +1,4 @@
 // All copy lives here so it can be edited without touching the layout.
-// Anything marked `placeholder: true` (or TBD) is waiting for real info.
 
 export const person = {
   name: 'Moussa Mamadou',
@@ -16,11 +15,20 @@ export const nav = [
   { id: 'about', label: 'About' },
   { id: 'work', label: 'Work' },
   { id: 'labs', label: 'Labs' },
-  { id: 'expertise', label: 'Expertise' },
+  { id: 'toolkit', label: 'Toolkit' },
   { id: 'contact', label: 'Contact' },
 ];
 
-const TBD = 'TBD';
+// The unconventional route, in five stops.
+export const route = [
+  { tag: 'Start', title: 'Software engineering' },
+  { tag: 'Detour', title: 'The banking world' },
+  { tag: 'Escape', title: 'Design, motion & 3D' },
+  { tag: 'Return', title: 'Front-end developer' },
+  { tag: 'Now', title: 'Creative development' },
+];
+
+export const formula = ['Technology', 'Design', 'Motion', 'Experimentation'];
 
 // Project images are copies of the screenshots on moussamamadou.com, kept in
 // public/projects/ so covers survive that site redeploying.
@@ -37,7 +45,6 @@ export const projects = [
     role: 'Developer',
     stack: ['Webflow', 'GSAP', 'PixiJS'],
     link: 'https://www.juliencalot.com/',
-    art: 'paint',
   },
   {
     num: '02',
@@ -49,7 +56,6 @@ export const projects = [
     role: 'Developer',
     stack: ['Nuxt', 'GSAP', 'Three.js', 'Prismic'],
     link: 'soon',
-    art: 'lens',
   },
   {
     num: '03',
@@ -61,7 +67,6 @@ export const projects = [
     role: 'Developer',
     stack: ['Webflow', 'GSAP'],
     link: 'https://www.marche-argonautes.fr/',
-    art: 'market',
   },
   {
     num: '04',
@@ -74,7 +79,6 @@ export const projects = [
     role: 'Developer',
     stack: ['GSAP', 'Lenis', 'SplitType', 'Webflow'],
     link: 'soon',
-    art: 'soft',
   },
   {
     num: '05',
@@ -87,7 +91,6 @@ export const projects = [
     role: 'Developer',
     stack: ['Vanilla JavaScript', 'WebGL', 'Astro.js'],
     link: 'https://www.historyofgraphicdesign.com/',
-    art: 'swiss',
   },
   {
     num: '06',
@@ -99,7 +102,6 @@ export const projects = [
     role: 'Developer',
     stack: ['Nuxt', 'GSAP', 'Tailwind', 'Sanity'],
     link: 'https://www.cheryfrance.com/',
-    art: 'drive',
   },
   {
     num: '07',
@@ -111,7 +113,6 @@ export const projects = [
     role: 'Developer',
     stack: ['Webflow', 'GSAP', 'D3.js', 'Swup'],
     link: 'https://www.satep.fr/',
-    art: 'data',
   },
 ];
 

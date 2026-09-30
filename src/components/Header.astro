@@ -1,0 +1,42 @@
+---
+import { nav, person } from '../data/content.js';
+---
+
+<header class="header" data-header>
+  <a href="#top" class="header__name mono" data-scroll-to>Moussa Mamadou</a>
+
+  <nav class="header__nav mono" aria-label="Sections">
+    {
+      nav.map((item, i) => (
+        <>
+          <a href={`#${item.id}`} class="header__link" data-scroll-to data-nav={item.id}>
+            <span data-scramble>{item.label}</span>
+          </a>
+          {i < nav.length - 1 && <span class="header__sep" aria-hidden="true">/</span>}
+        </>
+      ))
+    }
+  </nav>
+
+  <a href={`mailto:${person.email}`} class="header__cta mono"><span data-scramble>Available for work</span> ↗</a>
+
+  <button class="header__menu mono" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+    <span data-menu-label>Menu</span>
+  </button>
+</header>
+
+<div class="menu" id="menu" data-menu aria-hidden="true">
+  <ol class="menu__list">
+    {
+      nav.map((item, i) => (
+        <li class="menu__item">
+          <a href={`#${item.id}`} class="menu__link" data-scroll-to tabindex="-1">
+            <span class="menu__num mono">(0{i + 1})</span>
+            <span class="menu__label"><span data-menu-word>{item.label}</span></span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  <a href={`mailto:${person.email}`} class="menu__mail mono" tabindex="-1">{person.email} ↗</a>
+</div>

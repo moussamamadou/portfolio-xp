@@ -1,67 +1,32 @@
 ---
 import { person } from '../data/content.js';
-import SectionHead from './SectionHead.astro';
 ---
 
 <section class="contact" id="contact" aria-labelledby="contact-title">
-  <div class="contact__flood" aria-hidden="true">
-    {Array.from({ length: 12 }).map(() => <span data-flood-col />)}
-  </div>
+  <p class="kicker mono"><span>(05)</span><span>Contact</span><span>Just an email away</span></p>
 
-  <div class="contact__inner">
-    <SectionHead num="05" label="Contact" note="The part where we talk" />
+  <h2 class="contact__title" id="contact-title" aria-label="Let's build something">
+    <span class="contact__line" aria-hidden="true"><span data-contact-split>Let's build</span></span>
+    <span class="contact__line" aria-hidden="true"><span data-contact-split>something</span></span>
+  </h2>
 
-    <h2 class="contact__title" id="contact-title">
-      <span class="contact__line"><span data-fit data-contact-line>Let's create</span></span>
-      <span class="contact__line"><span data-fit data-contact-line>something</span></span>
-      <span class="contact__line"><span data-fit data-contact-line data-extra>extraordinary</span></span>
-    </h2>
-
-    <div class="contact__lead grid">
-      <p>Just an email away.</p>
-    </div>
-
-    <div class="channels">
-      <div class="channel grid">
-        <span class="channel__rule" aria-hidden="true"></span>
-        <p class="channel__label t-small">(Email)</p>
-        <a class="channel__value" href={`mailto:${person.email}`} data-cursor="Write">{person.email}</a>
-        <button class="channel__copy t-small" type="button" data-copy={person.email}><span data-copy-label>Copy address</span></button>
-      </div>
-      <div class="channel grid">
-        <span class="channel__rule" aria-hidden="true"></span>
-        <p class="channel__label t-small">(LinkedIn)</p>
-        <a class="channel__value" href={person.linkedin} target="_blank" rel="noopener" data-cursor="Connect">{person.linkedinLabel}</a>
-        <span class="channel__copy t-small">↗</span>
-      </div>
-    </div>
-
-    <a href={`mailto:${person.email}?subject=Let's build something`} class="bigcta" data-bigcta>
-      <span class="bigcta__rule" aria-hidden="true"></span>
-      <span class="bigcta__text" data-fit>Let's Build Something →</span>
+  <div class="contact__links">
+    <a class="contact__mail" href={`mailto:${person.email}`} data-cursor="Write ↗">
+      <span class="roll" data-roll>{person.email}</span>
     </a>
-  </div>
-
-  <div class="marquee" data-marquee aria-hidden="true">
-    <div class="marquee__track" data-marquee-track>
-      {Array.from({ length: 2 }).map(() => (
-        <div class="marquee__group">
-          {Array.from({ length: 4 }).map(() => (
-            <span class="marquee__item">Let's build something <span class="marquee__sq" /></span>
-          ))}
-        </div>
-      ))}
+    <div class="contact__row mono">
+      <button type="button" class="contact__copy" data-copy={person.email}><span data-copy-label>Copy address</span></button>
+      <a href={person.linkedin} target="_blank" rel="noopener"><span data-scramble>LinkedIn</span> ↗</a>
+      <a href={person.codepen} target="_blank" rel="noopener"><span data-scramble>CodePen</span> ↗</a>
     </div>
   </div>
 
-  <footer class="footer grid t-small">
-    <p class="footer__c">© {new Date().getFullYear()} Moussa Mamadou</p>
-    <p class="footer__time">Your time <span data-clock>--:--:--</span><br />Mine: somewhere on Earth</p>
-    <p class="footer__visits">
-      <span data-visit-line>Visit #1</span><br />
-      <button type="button" class="footer__reset" data-reset-visits>Reset the drama</button>
-    </p>
-    <p class="footer__grid">Press G for the grid</p>
-    <a href="#top" data-scroll-to class="footer__top">Back to top ↑</a>
+  <footer class="footer mono">
+    <p>© 2026 Moussa Mamadou</p>
+    <p>Your time <span data-clock>--:--:--</span></p>
+    <p>Designed &amp; coded by me</p>
+    <a href="#top" data-scroll-to>Back to top ↑</a>
   </footer>
+
+  <p class="mark" aria-hidden="true"><span data-mark>Moussa</span></p>
 </section>

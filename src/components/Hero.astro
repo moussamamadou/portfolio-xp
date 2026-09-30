@@ -1,32 +1,41 @@
 ---
-const name = ['Moussa', 'Mamadou'];
+import { projects } from '../data/content.js';
+
+// Two inline windows in the headline cycle through the project screenshots,
+// offset so they never show the same one.
+const reel = projects.filter((p) => p.image);
+const second = [...reel.slice(3), ...reel.slice(0, 3)];
 ---
 
 <section class="hero" id="top" aria-label="Intro">
-  <div class="hero__meta grid t-small">
-    <p class="hero__cell hero__cell--a" data-hero-meta>(Portfolio ©2026)</p>
-    <p class="hero__cell hero__cell--b" data-hero-meta>(00)<br />Intro</p>
-    <p class="hero__cell hero__cell--c" data-hero-meta>
-      Based somewhere on Earth<br /><span class="hero__coords" data-coords>00.0000° N, 00.0000° E</span>
-    </p>
-    <p class="hero__cell hero__cell--d" data-hero-meta>Scroll ↓</p>
+  <div class="hero__top mono">
+    <p data-hero-meta>(Folio) ©2026</p>
+    <p data-hero-meta>Creative developer<br />Independent</p>
+    <p class="hero__coords" data-hero-meta>Based somewhere on Earth<br /><span data-clock>--:--:--</span> your time</p>
   </div>
 
-  <div class="hero__tagline grid">
-    <p class="hero__tag" data-hero-tag>
-      If You Can Dream It,<br />I Can Code It <span class="hero__probably">(Probably)</span>.
-    </p>
-  </div>
-
-  <div class="hero__stage" data-hero-stage>
-    <h1 class="hero__name" aria-label="Moussa Mamadou" data-hero-name>
-      {
-        name.map((w) => (
-          <span class="hero__line" aria-hidden="true">
-            <span class="hero__word" data-fit data-hero-word>{w}</span>
-          </span>
-        ))
-      }
-    </h1>
-  </div>
+  <h1 class="hero__title" aria-label="Moussa Mamadou, creative developer. If you dream it, I code it (probably).">
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__words" data-hero-split>Moussa</span>
+      <span class="hero__win" data-hero-win>
+        {reel.map((p) => <img src={p.image} alt="" decoding="async" />)}
+      </span>
+      <span class="hero__words" data-hero-split>Mamadou</span>
+    </span>
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__note mono" data-hero-meta>Issue 26<br />/ Folio</span>
+      <span class="hero__words" data-hero-split>Creative Developer</span>
+    </span>
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__words" data-hero-split>If you dream it</span>
+      <span class="hero__win" data-hero-win>
+        {second.map((p) => <img src={p.image} alt="" decoding="async" />)}
+      </span>
+    </span>
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__words" data-hero-split>I code it</span>
+      <span class="hero__words hero__words--ghost" data-hero-split>(Probably)</span>
+      <span class="hero__note mono" data-hero-meta>Scroll<br />↓</span>
+    </span>
+  </h1>
 </section>
