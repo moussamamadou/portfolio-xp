@@ -1,12 +1,14 @@
 import gsap from 'gsap';
-import { $, $$, reduced, fit, lines, clippedChars } from './lib.js';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { $, $$, reduced, fit, lines, clippedChars, cycleWindows } from './lib.js';
 
 // Each section gets its own entrance, all driven by scroll:
 //   About    statement lines slide up out of masks as you read down
-//   Work     giant title chars rise centre-out; tiles dissolve in via WebGL
+//   Work     title chars rise centre-out once; tiles dissolve in via WebGL
 //   Labs     rules draw across, then titles rise
 //   Toolkit  tool names drop in from above, one column after the other
-//   Contact  headline builds char by char; the wordmark rises with the last scroll
+//   Contact  headline builds char by char around a screenshot window (the hero's
+//            signature, closing the loop); the wordmark rises with the last scroll
 
 const fitted = (el) => {
   el.style.display = 'inline-block';
@@ -17,12 +19,16 @@ const fitted = (el) => {
 
 export function initSections() {
   // Fitted headlines first, so the splits measure final sizes.
-  $$('[data-work-split], [data-contact-split], [data-mark]').forEach(fitted);
+  $$('[data-work-split], [data-contact-fit], [data-mark]').forEach(fitted);
 
   if (reduced) {
     gsap.set('[data-rise]', { opacity: 1 });
     return;
   }
+
+  // The contact window starts cycling once the section is near.
+  const contactWins = $$('.contact [data-win]');
+  ScrollTrigger.create({ trigger: '.contact', start: 'top 80%', once: true, onEnter: () => cycleWindows(contactWins, 0.8) });
 
   // Scrubbed line reveals (About statement, Labs title).
   $$('[data-lines]').forEach((el) => {
@@ -30,7 +36,7 @@ export function initSections() {
       gsap.from(line, {
         yPercent: 105,
         ease: 'none',
-        scrollTrigger: { trigger: line.parentElement, start: 'top 92%', end: 'top 62%', scrub: 0.6 },
+        scrollTrigger: { trigger: line.parentElement, start: 'top 96%', end: 'top 76%', scrub: 0.5 },
       });
     });
   });
@@ -55,9 +61,10 @@ export function initSections() {
     const cs = clippedChars(el);
     gsap.from(cs, {
       yPercent: 110,
-      ease: 'none',
-      stagger: { each: 0.06, from: 'center' },
-      scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 45%', scrub: 0.8 },
+      duration: 1.1,
+      ease: 'expo.out',
+      stagger: { each: 0.035, from: 'center' },
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
     });
   });
 
@@ -109,7 +116,7 @@ export function initSections() {
       yPercent: 110,
       ease: 'none',
       stagger: 0.05,
-      scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 55%', scrub: 0.8 },
+      scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 65%', scrub: 0.6 },
     });
   });
 

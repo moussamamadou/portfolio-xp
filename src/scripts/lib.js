@@ -1,4 +1,5 @@
 import SplitType from 'split-type';
+import gsap from 'gsap';
 
 export const $ = (s, root = document) => root.querySelector(s);
 export const $$ = (s, root = document) => [...root.querySelectorAll(s)];
@@ -52,4 +53,23 @@ export function fit(el, max = Infinity) {
   const w = el.getBoundingClientRect().width;
   const avail = el.parentElement.clientWidth;
   el.style.fontSize = `${Math.min(max, Math.floor((100 * avail * 0.995) / w * 10) / 10)}px`;
+}
+
+/**
+ * The signature: screenshot windows set into headlines. Each keeps cycling
+ * through the projects, the next shot wiping up over the last.
+ */
+export function cycleWindows(wins, delay = 2) {
+  wins.forEach((win, w) => {
+    const imgs = [...win.querySelectorAll('img')];
+    if (imgs.length < 2) return;
+    let i = 0;
+    let z = 1;
+    gsap.delayedCall(delay + w * 0.6, function step() {
+      i = (i + 1) % imgs.length;
+      imgs[i].style.zIndex = ++z;
+      gsap.fromTo(imgs[i], { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.15 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 0.9, ease: 'expo.inOut' });
+      gsap.delayedCall(1.8, step);
+    });
+  });
 }

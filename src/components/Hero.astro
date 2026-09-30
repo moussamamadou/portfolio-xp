@@ -17,7 +17,7 @@ const second = [...reel.slice(3), ...reel.slice(0, 3)];
   <h1 class="hero__title" aria-label="Moussa Mamadou, creative developer. If you dream it, I code it (probably).">
     <span class="hero__line" aria-hidden="true">
       <span class="hero__words" data-hero-split>Moussa</span>
-      <span class="hero__win" data-hero-win>
+      <span class="hero__win win" data-hero-win data-win>
         {reel.map((p) => <img src={p.image} alt="" decoding="async" />)}
       </span>
       <span class="hero__words" data-hero-split>Mamadou</span>
@@ -28,7 +28,7 @@ const second = [...reel.slice(3), ...reel.slice(0, 3)];
     </span>
     <span class="hero__line" aria-hidden="true">
       <span class="hero__words" data-hero-split>If you dream it</span>
-      <span class="hero__win" data-hero-win>
+      <span class="hero__win win" data-hero-win data-win>
         {second.map((p) => <img src={p.image} alt="" decoding="async" />)}
       </span>
     </span>

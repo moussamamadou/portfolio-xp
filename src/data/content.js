@@ -125,7 +125,7 @@ export const labs = [
   },
   {
     num: '02',
-    title: 'Smooth Scroll Experience',
+    title: 'Scroll Along a Path',
     tools: ['GSAP Core', 'GSAP ScrollTrigger', 'GSAP MotionPath'],
     codepen: null,
   },

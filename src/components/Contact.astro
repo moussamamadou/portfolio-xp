@@ -1,13 +1,20 @@
 ---
-import { person } from '../data/content.js';
+import { person, projects } from '../data/content.js';
+const reel = [...projects.slice(4), ...projects.slice(0, 4)].filter((p) => p.image);
 ---
 
 <section class="contact" id="contact" aria-labelledby="contact-title">
   <p class="kicker mono"><span>(05)</span><span>Contact</span><span>Just an email away</span></p>
 
   <h2 class="contact__title" id="contact-title" aria-label="Let's build something">
-    <span class="contact__line" aria-hidden="true"><span data-contact-split>Let's build</span></span>
-    <span class="contact__line" aria-hidden="true"><span data-contact-split>something</span></span>
+    <span class="contact__line" aria-hidden="true"
+      ><span data-contact-fit
+        ><span data-contact-split>Let's</span>
+        <span class="win win--dark" data-win>{reel.map((p) => <img src={p.image} alt="" loading="lazy" decoding="async" />)}</span>
+        <span data-contact-split>build</span></span
+      ></span
+    >
+    <span class="contact__line" aria-hidden="true"><span data-contact-fit><span data-contact-split>something</span></span></span>
   </h2>
 
   <div class="contact__links">
