@@ -1,60 +1,54 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { $, $$, splitChars, canHover, reduced } from '../utils.js';
+import { $, $$, canHover, reduced, shuffle } from '../utils.js';
 
-/* Rolling letters on links and buttons (the CSS does the motion). */
-export function initRolls() {
-  $$('[data-roll]').forEach((el) => splitChars(el));
-}
-
-/* Magnetic buttons: they lean toward the cursor, then spring back. */
-export function initMagnetic() {
+/* Hovering a [data-shuffle] link scrambles its text and lets it settle. */
+export function initShuffles() {
   if (!canHover || reduced) return;
-  $$('[data-magnetic]').forEach((el) => {
-    const x = gsap.quickTo(el, 'x', { duration: 0.6, ease: 'power3' });
-    const y = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3' });
-    const strength = el.classList.contains('btn--xxl') ? 0.25 : 0.4;
-    el.addEventListener('pointermove', (e) => {
-      const b = el.getBoundingClientRect();
-      x((e.clientX - (b.left + b.width / 2)) * strength);
-      y((e.clientY - (b.top + b.height / 2)) * strength);
-    });
-    el.addEventListener('pointerleave', () => {
-      gsap.to(el, { x: 0, y: 0, duration: 1, ease: 'elastic.out(1, 0.35)', overwrite: true });
-    });
+  $$('[data-shuffle]').forEach((el) => {
+    const text = $('.shuf', el) ?? el;
+    el.addEventListener('pointerenter', () => shuffle(text));
   });
 }
 
-/* A labelled bubble that appears only over elements that ask for one (data-cursor). */
+/* Section heads: the hairline draws itself, then the labels rise into their cells. */
+export function initSectionHeads() {
+  $$('[data-shead]').forEach((head) => {
+    if (reduced) return head.classList.add('is-in');
+    ScrollTrigger.create({ trigger: head, start: 'top 88%', once: true, onEnter: () => head.classList.add('is-in') });
+  });
+}
+
+/*
+ * The cursor: an 8px blue square. Over anything with data-cursor it stretches
+ * into a label, sized to the text so it never looks like a pill.
+ */
 export function initCursor() {
-  if (!canHover) return null;
+  if (!canHover) return;
   const cursor = $('.cursor');
   const label = $('.cursor__label', cursor);
-  const x = gsap.quickTo(cursor, 'x', { duration: 0.35, ease: 'power3' });
-  const y = gsap.quickTo(cursor, 'y', { duration: 0.35, ease: 'power3' });
+  const x = gsap.quickTo(cursor, 'x', { duration: 0.25, ease: 'power3' });
+  const y = gsap.quickTo(cursor, 'y', { duration: 0.25, ease: 'power3' });
   let current = null;
 
   window.addEventListener('pointermove', (e) => {
     x(e.clientX);
     y(e.clientY);
     const target = e.target.closest?.('[data-cursor]');
-    if (target !== current) {
-      current = target;
-      if (target) {
-        label.textContent = target.dataset.cursor;
-        cursor.classList.add('is-active');
-        cursor.classList.toggle('is-blue', !!target.closest('.pill, .specimen__card'));
-      } else {
-        cursor.classList.remove('is-active');
-      }
+    cursor.classList.toggle('on-blue', !!e.target.closest?.('.contact.is-blue, .menu'));
+    // Hide the square where the hero lens already follows the pointer.
+    cursor.classList.toggle('is-hidden', !target && !!e.target.closest?.('[data-hero-stage]'));
+    if (target === current) return;
+    current = target;
+    if (target) {
+      label.textContent = target.dataset.cursor;
+      cursor.style.setProperty('--cw', `${label.scrollWidth + 2}px`);
+      cursor.classList.add('is-active');
+    } else {
+      cursor.classList.remove('is-active');
     }
   });
   document.addEventListener('pointerleave', () => cursor.classList.remove('is-active'));
-  return {
-    set(text) {
-      label.textContent = text;
-    },
-  };
 }
 
 /* Smooth anchor scrolling through Lenis (falls back to native). */
@@ -74,49 +68,31 @@ export function initAnchors(lenis, onNavigate) {
   });
 }
 
+/* Press G to see the 12-column grid everything sits on. */
+export function initGridToggle() {
+  const lines = $('.gridlines');
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() !== 'g' || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest?.('input, textarea, [contenteditable]')) return;
+    lines.classList.toggle('is-on');
+  });
+}
+
 /*
- * Nav: a black pill slides to whichever section you're in (or whichever link you hover),
- * the bar tucks away when you scroll down and comes back when you scroll up.
+ * Nav: a small editorial bar. A blue square slides to the section you're in and
+ * pushes its label over; the name folds down to "M.M." once you leave the hero;
+ * everything turns white over the blue contact section.
  */
 export function initNav(lenis) {
   const nav = $('#nav');
   const links = $$('.nav__link', nav);
-  const pill = $('.nav__pill', nav);
-  const wrap = $('.nav__links', nav);
-  const progress = $('.nav__progress span', nav);
   const burger = $('.nav__burger', nav);
+  const burgerLabel = $('[data-burger-label]', burger);
   const menu = $('#menu');
   let active = null;
-  let hovered = null;
+  let isOpen = false;
 
-  const movePill = (link, instant = false) => {
-    links.forEach((l) => l.classList.toggle('is-lit', l === link));
-    if (!link) {
-      gsap.to(pill, { opacity: 0, scale: 0.6, duration: 0.4, ease: 'power3.out' });
-      return;
-    }
-    const w = wrap.getBoundingClientRect();
-    const b = link.getBoundingClientRect();
-    gsap.to(pill, {
-      x: b.left - w.left,
-      width: b.width,
-      opacity: 1,
-      scale: 1,
-      duration: instant ? 0 : 0.7,
-      ease: 'elastic.out(1, 0.75)',
-    });
-  };
-
-  links.forEach((link) => {
-    link.addEventListener('pointerenter', () => {
-      hovered = link;
-      movePill(link);
-    });
-    link.addEventListener('pointerleave', () => {
-      hovered = null;
-      movePill(active);
-    });
-  });
+  const moveMarker = (link) => links.forEach((l) => l.classList.toggle('is-active', l === link));
 
   links.forEach((link) => {
     const section = $(`#${link.dataset.section}`);
@@ -128,69 +104,89 @@ export function initNav(lenis) {
       onToggle: (self) => {
         if (self.isActive) active = link;
         else if (active === link) active = null;
-        if (!hovered) movePill(active);
+        moveMarker(active);
       },
     });
   });
 
-  // Contact floods blue, so the nav switches to white there.
+  // Past the hero the bar gets a solid ground so content can pass under it.
   ScrollTrigger.create({
-    trigger: '#contact',
-    start: 'top 40px',
-    end: 'bottom top',
-    toggleClass: { targets: nav, className: 'on-blue' },
+    trigger: '#about',
+    start: 'top top',
+    end: 'max',
+    toggleClass: { targets: nav, className: 'is-solid' },
+  });
+
+  // The name folds away to its initials after the hero.
+  const folds = $$('[data-fold]', nav);
+  folds.forEach((f) => (f.dataset.w = f.offsetWidth));
+  const fold = (closed) =>
+    gsap.to(folds, {
+      width: (i, f) => (closed ? 0 : +f.dataset.w),
+      duration: 0.8,
+      ease: 'expo.inOut',
+      stagger: 0.05,
+      overwrite: true,
+      onComplete: () => !closed && gsap.set(folds, { clearProps: 'width' }),
+    });
+  ScrollTrigger.create({
+    trigger: '#about',
+    start: 'top 60%',
+    onEnter: () => fold(true),
+    onLeaveBack: () => fold(false),
   });
 
   ScrollTrigger.create({
-    start: 0,
-    end: 'max',
-    onUpdate: (self) => {
-      progress.style.transform = `scaleX(${self.progress})`;
-      const menuOpen = burger.getAttribute('aria-expanded') === 'true';
-      if (!menuOpen) nav.classList.toggle('is-hidden', self.direction === 1 && self.scroll() > 240);
+    trigger: '#contact',
+    start: 'top 30px',
+    end: 'bottom top',
+    onToggle: (self) => {
+      nav.dataset.blue = self.isActive ? '1' : '';
+      nav.classList.toggle('on-blue', self.isActive || isOpen);
     },
   });
 
-  // Mobile menu: a circle grows out of the burger.
+  // Mobile menu: the panel wipes down, links rise one by one, closes the other way.
   const menuLinks = $$('a', menu);
+  const labels = $$('.menu__link', menu);
   const setMenu = (open) => {
+    isOpen = open;
     burger.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-hidden', String(!open));
     menuLinks.forEach((a) => (a.tabIndex = open ? 0 : -1));
-    nav.classList.toggle('on-blue', open);
+    nav.classList.toggle('on-blue', open || nav.dataset.blue === '1');
+    burgerLabel.textContent = open ? 'Close' : 'Menu';
+    gsap.killTweensOf([menu, labels]);
     if (open) {
       lenis?.stop();
       gsap.set(menu, { visibility: 'visible' });
-      gsap.to(menu, { clipPath: 'circle(150% at calc(100% - 50px) 36px)', duration: 0.9, ease: 'expo.inOut' });
-      gsap.fromTo($$('.menu__link', menu), { yPercent: 110 }, { yPercent: 0, duration: 0.9, stagger: 0.05, ease: 'expo.out', delay: 0.3 });
+      gsap.fromTo(menu, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'expo.inOut' });
+      gsap.fromTo(labels, { yPercent: 105 }, { yPercent: 0, duration: 0.8, stagger: 0.04, ease: 'expo.out', delay: 0.35 });
     } else {
       lenis?.start();
+      gsap.to(labels, { yPercent: -105, duration: 0.4, stagger: 0.02, ease: 'power3.in' });
       gsap.to(menu, {
-        clipPath: 'circle(0% at calc(100% - 50px) 36px)',
+        clipPath: 'inset(0% 0% 0% 100%)',
         duration: 0.7,
+        delay: 0.15,
         ease: 'expo.inOut',
         onComplete: () => gsap.set(menu, { visibility: 'hidden' }),
       });
     }
   };
-  burger.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+  burger.addEventListener('click', () => setMenu(!isOpen));
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') setMenu(false);
+    if (e.key === 'Escape' && isOpen) setMenu(false);
   });
 
-  // Hidden until the loader is gone, then the pieces drop in one by one.
-  const parts = [$('.nav__logo', nav), $('.nav__status', nav), ...links, $('.nav__cta', nav), burger];
-  gsap.set(parts, { yPercent: -160, opacity: 0 });
-  gsap.set(wrap, { scaleX: 0.2, opacity: 0 });
+  // Hidden until the loader is gone, then each cell slides up into place.
+  const parts = [...nav.children].filter((c) => getComputedStyle(c).display !== 'none');
+  if (!reduced) gsap.set(parts, { yPercent: -120, opacity: 0 });
 
   return {
-    closeMenu: () => burger.getAttribute('aria-expanded') === 'true' && setMenu(false),
+    closeMenu: () => isOpen && setMenu(false),
     intro() {
-      return gsap
-        .timeline()
-        .to(wrap, { scaleX: 1, opacity: 1, duration: 1, ease: 'expo.out' }, 0.4)
-        .to(parts, { yPercent: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.05 }, 0.5)
-        .add(() => movePill(active, true));
+      return gsap.to(parts, { yPercent: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.06, onComplete: () => moveMarker(active) });
     },
   };
 }

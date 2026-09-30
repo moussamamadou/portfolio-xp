@@ -1,86 +1,67 @@
 ---
 import { awards } from '../data/content.js';
-import Laurel from './Laurel.astro';
+import SectionHead from './SectionHead.astro';
 ---
 
 <section class="recognition section" id="recognition" aria-labelledby="recognition-title">
   <div class="recognition__pin" data-awards-pin>
-    <div class="recognition__head">
-      <div class="section__label mono"><span>(05)</span><span>Recognition</span></div>
-      <h2 class="recognition__title" id="recognition-title">
-        <span data-fake-line>Fake it</span>
-        <span data-fake-line>till you</span>
-        <span data-fake-line class="recognition__win">win it</span>
-      </h2>
-      <p class="recognition__copy">
-        I don't have an official Awwward yet. So let's have fun with it.
-      </p>
-      <p class="recognition__legal mono">
-        *None of these awards exist. Any resemblance to real award platforms is affectionate parody.
-      </p>
-      <div class="recognition__dots mono" aria-hidden="true">
-        {awards.map((_, i) => <span data-award-dot>{String(i + 1).padStart(2, '0')}</span>)}
+    <SectionHead num="05" label="Recognition" note="Awards (sort of)" count={`(0${awards.length})`} />
+
+    <div class="recognition__body grid">
+      <div class="recognition__head">
+        <h2 class="recognition__title" id="recognition-title">
+          <span class="rline"><span data-fake-line>Fake it</span></span>
+          <span class="rline"><span data-fake-line>till you</span></span>
+          <span class="rline"><span data-fake-line class="recognition__win">win it.</span></span>
+        </h2>
+        <p class="recognition__copy">I don't have an official Awwward yet. So let's have fun with it.</p>
+        <p class="recognition__legal t-small">*None of these awards exist. Any resemblance to real award platforms is affectionate parody.</p>
+        <div class="recognition__index t-small" aria-hidden="true">
+          {awards.map((a, i) => (
+            <p data-award-dot>
+              <span>0{i + 1}</span>
+              <span>{a.body}</span>
+            </p>
+          ))}
+        </div>
+      </div>
+
+      <div class="awards" data-awards>
+        {
+          awards.map((a, i) => (
+            <article class="cert" data-award style={`--i:${i}`}>
+              <div class="cert__frame">
+                <div class="cert__top t-small">
+                  <span>{a.body}{a.bodyLong && ` (${a.bodyLong})`}</span>
+                  <span>No. 00{i + 1} — {a.year}</span>
+                </div>
+                <p class="cert__badge">{a.badge}</p>
+                <p class="cert__badge-label t-small">{a.badgeLabel}</p>
+                <h3 class="cert__title">{a.title}</h3>
+                <table class="cert__scores t-small">
+                  <tbody>
+                    {a.scores.map(([label, value]) => (
+                      <tr class="score">
+                        <td class="score__label">{label}</td>
+                        <td class="score__bar">
+                          <span class="score__fill" data-score={value} />
+                        </td>
+                        <td class="score__value" data-score-value={value}>
+                          {value.toFixed(1)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p class="cert__jury t-small">{a.jury}</p>
+                <span class="cert__stamp t-small" aria-hidden="true">Not a real award</span>
+              </div>
+            </article>
+          ))
+        }
       </div>
     </div>
 
-    <div class="awards" data-awards>
-      {
-        awards.map((a, i) => (
-          <article class="award" data-award style={`--i:${i}`}>
-            <div class={`award__badge award__badge--${a.badge.toLowerCase()}`}>
-              {a.badge === 'FWA' ? (
-                <>
-                  <svg class="award__ring" viewBox="0 0 120 120" aria-hidden="true">
-                    <defs>
-                      <path id={`ring-${i}`} d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
-                    </defs>
-                    <text>
-                      <textPath href={`#ring-${i}`} textLength="272">of the day • allegedly • of the day • </textPath>
-                    </text>
-                  </svg>
-                  <span class="award__badge-mark">FWA</span>
-                </>
-              ) : (
-                <>
-                  <Laurel />
-                  <span class="award__badge-mark">{a.badge}</span>
-                </>
-              )}
-            </div>
-
-            <div class="award__main">
-              <p class="award__body mono">
-                {a.body}
-                {a.bodyLong && <span> ({a.bodyLong})</span>} — {a.badgeLabel}
-              </p>
-              <h3 class="award__title">{a.title}</h3>
-              <p class="award__year">{a.year}</p>
-              <ul class="award__scores">
-                {a.scores.map(([label, value]) => (
-                  <li class="score">
-                    <span class="score__label mono">{label}</span>
-                    <span class="score__bar">
-                      <span class="score__fill" data-score={value} />
-                    </span>
-                    <span class="score__value mono" data-score-value={value}>
-                      {value.toFixed(1)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p class="award__jury mono">{a.jury}</p>
-            </div>
-
-            <span class="award__stamp" aria-hidden="true">
-              Not a<br />real award
-            </span>
-          </article>
-        ))
-      }
-    </div>
+    <p class="recognition__mention t-small grid"><span>Honorable mention · by myself</span></p>
   </div>
-
-  <aside class="ribbon" aria-hidden="true">
-    <span class="ribbon__text">Honorable mention · by myself</span>
-  </aside>
 </section>

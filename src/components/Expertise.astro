@@ -1,25 +1,25 @@
 ---
 import { skillGroups, person } from '../data/content.js';
+import SectionHead from './SectionHead.astro';
 ---
 
 <section class="expertise section" id="expertise" aria-labelledby="expertise-title">
-  <div class="expertise__head">
-    <div class="section__label mono"><span>(04)</span><span>Expertise</span></div>
-    <p class="expertise__kicker mono">My developer toolkit</p>
-    <h2 class="expertise__title" id="expertise-title" data-weight-wave>Things I Actually Know How To Use</h2>
-  </div>
+  <SectionHead num="04" label="Expertise" note="My developer toolkit" />
 
-  <div class="expertise__grid">
+  <h2 class="expertise__title" id="expertise-title" data-weight-wave>Things I Actually Know How To Use</h2>
+
+  <div class="expertise__grid grid">
     <div class="playground" data-playground data-cursor="Throw">
-      <p class="playground__hint mono" aria-hidden="true">Grab one. Throw it. It's fine.</p>
-      <button class="playground__shake mono" type="button" data-shake>Shake it ↯</button>
+      <div class="playground__bar t-small">
+        <span>Playground — grab one, throw it. It's fine.</span>
+        <button class="playground__shake" type="button" data-shake>Shake ↯</button>
+      </div>
       <div class="playground__bodies" aria-hidden="true">
         {
           skillGroups.flatMap((g) =>
             g.items.map((s) => (
-              <div class={`pill pill--${g.id}`} data-pill data-group={g.id} data-name={s.name}>
-                <span class="pill__name">{s.name}</span>
-                <span class="pill__note">{s.note}</span>
+              <div class={`tag tag--${g.id}`} data-tag data-group={g.id} data-name={s.name} data-note={s.note}>
+                {s.name}
               </div>
             )),
           )
@@ -29,17 +29,17 @@ import { skillGroups, person } from '../data/content.js';
 
     <div class="legend">
       {
-        skillGroups.map((g) => (
+        skillGroups.map((g, gi) => (
           <div class="legend__group" data-legend-group={g.id}>
-            <h3 class="legend__title mono">
+            <h3 class="legend__title t-small">
               <span class={`legend__swatch legend__swatch--${g.id}`} aria-hidden="true" />
-              {g.title}
+              <span>({String.fromCharCode(65 + gi)})</span> {g.title}
             </h3>
             <ul class="legend__list">
               {g.items.map((s) => (
                 <li class="legend__item" data-legend-item={s.name}>
                   <span class="legend__name">{s.name}</span>
-                  <span class="legend__note">{s.note}</span>
+                  <span class="legend__note t-small">{s.note}</span>
                 </li>
               ))}
             </ul>
@@ -49,8 +49,8 @@ import { skillGroups, person } from '../data/content.js';
     </div>
   </div>
 
-  <p class="expertise__closing">
-    I'm always learning and experimenting, pushing the boundaries of what's possible with modern web development.
-    <a href={person.website} target="_blank" rel="noopener" class="link">moussamamadou.com ↗</a>
-  </p>
+  <div class="expertise__closing grid">
+    <p>I'm always learning and experimenting, pushing the boundaries of what's possible with modern web development.</p>
+    <a href={person.website} target="_blank" rel="noopener" class="tlink t-small" data-shuffle><span class="shuf">moussamamadou.com</span> ↗</a>
+  </div>
 </section>

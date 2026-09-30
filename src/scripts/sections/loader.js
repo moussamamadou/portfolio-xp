@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { $, $$, maskWords, reduced } from '../utils.js';
 
-// The more you visit, the less seriously the loading screen takes itself.
+// The more you visit, the less the loading screen has to say.
 const KEY = 'mm-portfolio:visits';
 
 export function readVisit() {
@@ -30,13 +30,53 @@ const pageLoaded = new Promise((resolve) => {
   else window.addEventListener('load', resolve, { once: true });
 });
 
-function swap(el, text, { out = 0.45, inn = 0.8 } = {}) {
+/*
+ * One quiet layout for every visit: a name, one line of copy, a hairline and an
+ * odometer counting to 100. What changes is how long it takes and what it says.
+ * 1: a short show. 2: it knows you're back. 3: it just loads. 4+: it barely bothers.
+ */
+const scripts = {
+  1: {
+    steps: [0, 18, 46, 73, 100],
+    lines: ['Loading a portfolio.', 'Aligning twelve columns.', 'Kerning the name, twice.', 'Please act impressed.'],
+    visit: 'First visit. Enjoy the (short) show.',
+  },
+  2: {
+    steps: [0, 52, 100],
+    lines: ["Oh, you're back.", 'Shorter version then.'],
+    visit: 'Visit 02. The loader noticed.',
+  },
+  3: {
+    steps: [0, 100],
+    lines: ['Loading. For real this time.'],
+    visit: 'Visit 03. No more jokes.',
+  },
+  4: {
+    steps: [0, 100],
+    lines: ['You come here often.'],
+    visit: null,
+  },
+};
+
+function buildCounter(el) {
+  el.innerHTML = [2, 10, 10]
+    .map((n) => `<span class="loader__digit"><span>${Array.from({ length: n }, (_, i) => `<span>${i}</span>`).join('')}</span></span>`)
+    .join('') + '<span class="loader__pct">%</span>';
+  const cols = $$('.loader__digit > span', el);
+  return (v) => {
+    const n = Math.round(v);
+    const digits = [Math.floor(n / 100), Math.floor(n / 10) % 10, n % 10];
+    cols.forEach((c, i) => gsap.set(c, { yPercent: -(digits[i] * 100) / (i ? 10 : 2) }));
+  };
+}
+
+function swapLine(el, text) {
   const tl = gsap.timeline();
   const old = $$('.w > span', el);
-  if (old.length) tl.to(old, { yPercent: -110, duration: out, stagger: 0.015, ease: 'power3.in' });
+  if (old.length) tl.to(old, { yPercent: -105, duration: 0.35, stagger: 0.01, ease: 'power3.in' });
   tl.add(() => {
     const words = maskWords(el, text);
-    gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: inn, stagger: 0.03, ease: 'expo.out' });
+    gsap.fromTo(words, { yPercent: 105 }, { yPercent: 0, duration: 0.6, stagger: 0.02, ease: 'expo.out' });
   });
   return tl;
 }
@@ -47,288 +87,56 @@ function swap(el, text, { out = 0.45, inn = 0.8 } = {}) {
  */
 export function runLoader(visit) {
   const loader = $('#loader');
-  const stage = $('.loader__stage', loader);
-  const skip = $('.loader__skip', loader);
   const level = reduced ? 3 : Math.min(visit.shown, 4);
-  loader.classList.add(`loader--v${level}`);
+  const script = scripts[level];
+  const line = $('[data-loader-line]', loader);
+  const bar = $('[data-loader-bar]', loader);
+  const setCount = buildCounter($('[data-loader-count]', loader));
+  $('[data-loader-visit]', loader).textContent = script.visit ?? `Visit ${String(visit.shown).padStart(2, '0')}. Welcome back, regular.`;
 
   return new Promise((resolve) => {
-    let finished = false;
-    const done = () => {
-      if (finished) return;
-      finished = true;
-      resolve();
+    let leaving = false;
+    const state = { p: 0 };
+    const render = () => {
+      setCount(state.p);
+      gsap.set(bar, { scaleX: state.p / 100 });
     };
-    const ctx = { loader, stage, skip, visit, done };
-    const variant = [dramatic, selfAware, real, regular][level - 1](ctx);
+    render();
 
-    const onSkip = () => variant.skip();
-    skip.addEventListener('click', onSkip, { once: true });
-    const onKey = (e) => {
-      if (e.key === 'Escape') {
-        window.removeEventListener('keydown', onKey);
-        onSkip();
-      }
+    const leave = () => {
+      if (leaving) return;
+      leaving = true;
+      tl.kill();
+      state.p = 100;
+      render();
+      window.removeEventListener('keydown', onKey);
+      gsap
+        .timeline({ onComplete: () => loader.remove() })
+        .to($$('.loader__digit > span, .loader__pct, .loader__top > *, .loader__visit', loader), {
+          yPercent: '-=100',
+          opacity: 0,
+          duration: 0.35,
+          stagger: 0.015,
+          ease: 'power3.in',
+        })
+        .to(bar, { scaleX: 0, transformOrigin: 'right', duration: 0.4, ease: 'expo.in' }, 0)
+        .to(loader, { clipPath: 'inset(0% 0% 100% 0%)', duration: 0.8, ease: 'expo.inOut' }, 0.2)
+        .add(resolve, 0.4);
     };
+
+    const onKey = (e) => e.key === 'Escape' && leave();
     window.addEventListener('keydown', onKey);
+    $('.loader__skip', loader).addEventListener('click', leave);
+
+    // Count up in a few uneven jumps; each jump brings the next line of copy.
+    const tl = gsap.timeline({ delay: 0.15 });
+    const perStep = level === 1 ? 0.45 : level === 2 ? 0.5 : level === 3 ? 0.6 : 0.35;
+    script.steps.slice(1).forEach((to, i) => {
+      if (script.lines[i]) tl.add(swapLine(line, script.lines[i]), i === 0 ? 0 : '>-0.1');
+      tl.to(state, { p: to, duration: perStep, ease: 'expo.inOut', onUpdate: render }, i === 0 ? 0.1 : '<0.05');
+    });
+    const tail = script.lines.slice(script.steps.length - 1);
+    tail.forEach((l) => tl.add(swapLine(line, l)).to({}, { duration: 0.45 }));
+    tl.add(() => pageLoaded.then(() => gsap.delayedCall(level === 1 ? 0.3 : 0.05, leave)));
   });
-}
-
-/** Shared "get out of the way" exit: the whole loader lifts off like a sheet. */
-function liftOff({ loader, done }, { delay = 0 } = {}) {
-  gsap
-    .timeline({ delay, onComplete: () => loader.classList.add('is-done') })
-    .add(done, 0.25)
-    .to(loader, {
-      yPercent: -100,
-      borderBottomLeftRadius: '50% 14vh',
-      borderBottomRightRadius: '50% 14vh',
-      duration: 1.1,
-      ease: 'expo.inOut',
-    }, 0);
-}
-
-/* --------------------------------------------------------------------------
-   VISIT 01: THE DRAMATIC
-   -------------------------------------------------------------------------- */
-function dramatic(ctx) {
-  const { stage, loader, done } = ctx;
-  stage.innerHTML = `
-    <div class="ld-top mono">
-      <span>MM—OS v4.0.4 / Boot sequence</span>
-      <span>[ Do not close your browser ]</span>
-      <span>T+<span data-ld-time>00:00.00</span></span>
-    </div>
-    <div class="ld-orbit" aria-hidden="true">
-      <div class="ld-orbit__ring"></div>
-      <div class="ld-orbit__ring ld-orbit__ring--2"></div>
-      <div class="ld-orbit__arm"></div>
-      <div class="ld-orbit__arm ld-orbit__arm--2"></div>
-      <div class="ld-orbit__core">✺</div>
-    </div>
-    <p class="ld-headline"></p>
-    <div class="ld-log" aria-hidden="true"></div>
-    <p class="ld-percent" aria-hidden="true"><span data-pct>0</span><sup>%</sup></p>
-    <div class="ld-bar"></div>
-    <div class="ld-curtain" aria-hidden="true">${'<span></span>'.repeat(6)}</div>`;
-
-  const headline = $('.ld-headline', stage);
-  const logEl = $('.ld-log', stage);
-  const pctEl = $('[data-pct]', stage);
-  const timeEl = $('[data-ld-time]', stage);
-  const bar = $('.ld-bar', stage);
-  const curtain = $$('.ld-curtain span', stage);
-
-  const log = [
-    ['Mounting ego.js', 'ok'],
-    ['Inflating typography to 2000%', 'ok'],
-    ['Calibrating blue (#2340FF)', 'ok'],
-    ['Teaching buttons to be magnetic', 'ok'],
-    ['Hiring a full orchestra', 'declined (budget)'],
-    ['Rendering suspense', '38%… still 38%'],
-    ['Polishing easing curves', 'expo.inOut'],
-    ['Adding a loading screen to the loading screen', 'ok'],
-    ['Checking if anyone is still here', '1 human detected'],
-    ['Rehearsing the grand entrance', 'ready'],
-  ];
-
-  const pct = { v: 0 };
-  const renderPct = () => {
-    pctEl.textContent = Math.round(pct.v);
-    bar.style.transform = `scaleX(${pct.v / 100})`;
-  };
-
-  const start = performance.now();
-  const tick = () => {
-    const t = (performance.now() - start) / 1000;
-    const m = String(Math.floor(t / 60)).padStart(2, '0');
-    const s = (t % 60).toFixed(2).padStart(5, '0');
-    timeEl.textContent = `${m}:${s}`;
-  };
-  gsap.ticker.add(tick);
-
-  const loops = [
-    gsap.to($('.ld-orbit__arm', stage), { rotation: 360, duration: 2.4, repeat: -1, ease: 'none' }),
-    gsap.to($('.ld-orbit__arm--2', stage), { rotation: -360, duration: 1.4, repeat: -1, ease: 'none' }),
-    gsap.to($('.ld-orbit__ring', stage), { rotation: 360, duration: 24, repeat: -1, ease: 'none' }),
-    gsap.to($('.ld-orbit__core', stage), { rotation: 360, duration: 5, repeat: -1, ease: 'none' }),
-  ];
-
-  const tl = gsap.timeline();
-  tl.from($$('.ld-top > span', stage), { yPercent: 120, opacity: 0, stagger: 0.1, duration: 0.7, ease: 'expo.out' }, 0)
-    .from($('.ld-orbit', stage), { scale: 0, rotation: -180, duration: 1.6, ease: 'expo.out' }, 0.1)
-    .from($('.ld-percent', stage), { yPercent: 50, opacity: 0, duration: 1.2, ease: 'expo.out' }, 0.2)
-    .add(swap(headline, 'Welcome to my portfolio loading experience...'), 0.3)
-    .to(pct, { v: 37, duration: 1.9, ease: 'power2.inOut', onUpdate: renderPct }, 0.5)
-    .to(pct, { v: 38, duration: 1, ease: 'none', onUpdate: renderPct })
-    .add(swap(headline, 'Preparing something unnecessarily dramatic...'), 3)
-    .to($('.ld-orbit', stage), { scale: 1.25, duration: 1.2, ease: 'elastic.out(1, 0.5)' }, 3.2)
-    .to(pct, { v: 86, duration: 1.4, ease: 'expo.out', onUpdate: renderPct }, 3.4)
-    .to(pct, { v: 99, duration: 1.2, ease: 'power1.inOut', onUpdate: renderPct })
-    .add(swap(headline, 'Almost done with the show. Thanks for waiting.'), 5.6)
-    .to({}, { duration: 1 })
-    .addPause('+=0', () => pageLoaded.then(() => tl.play()))
-    .to(pct, { v: 100, duration: 0.35, ease: 'power2.in', onUpdate: renderPct })
-    .to($('.ld-orbit', stage), { scale: 0, rotation: 180, duration: 0.8, ease: 'expo.in' }, '<')
-    .add(showEnter);
-
-  log.forEach((line, i) => {
-    tl.call(() => {
-      const p = document.createElement('p');
-      p.innerHTML = `&gt; <b>${line[0]}</b> … <i>${line[1]}</i>`;
-      logEl.appendChild(p);
-      gsap.from(p, { opacity: 0, x: -12, duration: 0.4, ease: 'power2.out' });
-    }, null, 0.4 + i * 0.62);
-  });
-
-  let enterBtn;
-  function showEnter() {
-    enterBtn = document.createElement('button');
-    enterBtn.type = 'button';
-    enterBtn.className = 'ld-enter';
-    enterBtn.innerHTML = '<span class="ld-enter__label">Enter</span>';
-    // Take the orbit's place, so the button lands where all the spinning was.
-    const orbit = $('.ld-orbit', stage);
-    enterBtn.style.left = `${orbit.offsetLeft + orbit.offsetWidth / 2}px`;
-    enterBtn.style.top = `${orbit.offsetTop + orbit.offsetHeight / 2}px`;
-    stage.insertBefore(enterBtn, $('.ld-curtain', stage));
-    gsap.from(enterBtn, { scale: 0, duration: 1.2, ease: 'elastic.out(1, 0.45)' });
-    enterBtn.focus({ preventScroll: true });
-    enterBtn.addEventListener('click', enter, { once: true });
-    ctx.skip.textContent = 'Or just press Enter';
-  }
-
-  let exiting = false;
-  function cleanup() {
-    tl.kill();
-    loops.forEach((l) => l.kill());
-    gsap.ticker.remove(tick);
-  }
-
-  // The payoff: the button swallows the screen, then the blue drains away upward.
-  function enter() {
-    if (exiting) return;
-    exiting = true;
-    cleanup();
-    const r = enterBtn.getBoundingClientRect();
-    const cover = (Math.hypot(window.innerWidth, window.innerHeight) / r.width) * 2.2;
-    gsap
-      .timeline({ onComplete: () => loader.classList.add('is-done') })
-      .to($('.ld-enter__label', enterBtn), { opacity: 0, duration: 0.2 })
-      .to(enterBtn, { scale: cover, duration: 0.9, ease: 'expo.inOut' }, 0)
-      .set(curtain, { scaleY: 1 })
-      .set([...stage.children].filter((c) => !c.classList.contains('ld-curtain')), { autoAlpha: 0 })
-      .set([loader], { backgroundColor: 'transparent' })
-      .set(ctx.skip, { autoAlpha: 0 })
-      .add(done)
-      .to(curtain, { scaleY: 0, transformOrigin: 'top', duration: 1.1, ease: 'expo.inOut', stagger: 0.06 });
-  }
-
-  return {
-    skip() {
-      if (exiting) return;
-      if (enterBtn) return enter();
-      exiting = true;
-      cleanup();
-      gsap.set(ctx.skip, { autoAlpha: 0 });
-      liftOff(ctx);
-    },
-  };
-}
-
-/* --------------------------------------------------------------------------
-   VISIT 02: THE SELF-AWARE
-   -------------------------------------------------------------------------- */
-function selfAware(ctx) {
-  const { stage } = ctx;
-  stage.innerHTML = `
-    <div class="ld-simple">
-      <p class="ld-simple__line"></p>
-      <div class="ld-simple__bar"><span></span></div>
-      <p class="mono ld-simple__small"><span class="ld-simple__pct">0%</span> · visit #${ctx.visit.shown}, we've met</p>
-    </div>`;
-  const line = $('.ld-simple__line', stage);
-  const bar = $('.ld-simple__bar span', stage);
-  const pctEl = $('.ld-simple__pct', stage);
-  const pct = { v: 0 };
-  const render = () => {
-    pctEl.textContent = `${Math.round(pct.v)}%`;
-    bar.style.transform = `scaleX(${pct.v / 100})`;
-  };
-  let exiting = false;
-  const exit = () => {
-    if (exiting) return;
-    exiting = true;
-    tl.kill();
-    gsap.set(ctx.skip, { autoAlpha: 0 });
-    liftOff(ctx);
-  };
-  const tl = gsap
-    .timeline()
-    .add(swap(line, "Back so soon? Let's pretend we're loading again..."), 0)
-    .to(pct, { v: 45, duration: 1.2, ease: 'power2.out', onUpdate: render }, 0.2)
-    .add(swap(line, 'Still keeping up appearances. Bear with me...'), 1.6)
-    .to(pct, { v: 80, duration: 1, ease: 'power2.out', onUpdate: render }, 1.8)
-    .add(swap(line, 'Last time with the drama, I promise.'), 3.1)
-    .addPause('+=0.2', () => pageLoaded.then(() => tl.play()))
-    .to(pct, { v: 100, duration: 0.6, ease: 'power2.inOut', onUpdate: render })
-    .add(exit, '+=0.5');
-  return { skip: exit };
-}
-
-/* --------------------------------------------------------------------------
-   VISIT 03: THE REAL
-   -------------------------------------------------------------------------- */
-function real(ctx) {
-  const { stage, loader, done } = ctx;
-  stage.innerHTML = `
-    <div class="ld-simple">
-      <p class="ld-simple__line">Loading...</p>
-      <div class="ld-simple__bar"><span></span></div>
-      <p class="mono ld-simple__small">(no more pretending)</p>
-    </div>`;
-  const bar = $('.ld-simple__bar span', stage);
-  let exiting = false;
-  const exit = () => {
-    if (exiting) return;
-    exiting = true;
-    tl.kill();
-    gsap.timeline({ onComplete: () => loader.classList.add('is-done') }).add(done, 0.1).to(loader, { autoAlpha: 0, duration: 0.5 }, 0);
-  };
-  const tl = gsap
-    .timeline()
-    .to(bar, { scaleX: 0.7, duration: 0.8, ease: 'power1.out' })
-    .addPause('+=0', () => pageLoaded.then(() => tl.play()))
-    .to(bar, { scaleX: 1, duration: 0.3 })
-    .add(exit, '+=0.15');
-  return { skip: exit };
-}
-
-/* --------------------------------------------------------------------------
-   VISIT 04+: THE REGULAR
-   -------------------------------------------------------------------------- */
-function regular(ctx) {
-  const { stage, loader, done } = ctx;
-  stage.innerHTML = `
-    <div class="ld-simple">
-      <p class="ld-simple__line"></p>
-      <p class="mono ld-simple__small" style="opacity:0">We should probably stop pretending this is loading. (Visit #${ctx.visit.shown})</p>
-    </div>`;
-  const line = $('.ld-simple__line', stage);
-  const small = $('.ld-simple__small', stage);
-  let exiting = false;
-  const exit = () => {
-    if (exiting) return;
-    exiting = true;
-    tl.kill();
-    gsap.timeline({ onComplete: () => loader.classList.add('is-done') }).add(done, 0.1).to(loader, { autoAlpha: 0, duration: 0.5 }, 0);
-  };
-  const tl = gsap
-    .timeline()
-    .add(swap(line, 'Loading...', { inn: 0.5 }), 0)
-    .add(swap(line, 'You come here often.'), 0.8)
-    .to(small, { opacity: 1, duration: 0.5 }, 1.5)
-    .addPause('+=0', () => pageLoaded.then(() => tl.play()))
-    .add(exit, '+=1');
-  return { skip: exit };
 }

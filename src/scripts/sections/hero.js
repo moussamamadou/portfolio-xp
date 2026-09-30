@@ -1,141 +1,134 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { $, $$, splitChars, lerp, clamp, canHover, reduced, rand } from '../utils.js';
+import { $, $$, splitChars, fitText, lerp, canHover, reduced } from '../utils.js';
 
 /*
- * Hero: the name is made of variable-weight letters that swell (and turn blue)
- * as the cursor gets close. Without a cursor, a slow wave runs through them.
- * Scrolling away pulls the two lines apart while About slides over the top.
+ * Hero: the name is set edge to edge, one fitted line per word. A square blue
+ * lens follows the cursor and magnifies what's under it, redrawn in a light
+ * italic (a take on Codrops' mouse-following lens). Without a mouse the lens
+ * drifts on its own. Scrolling away lifts every letter at its own speed.
  */
+
+// Deterministic per-letter speeds so both layers of the name move together.
+const speed = (i) => 0.35 + ((Math.sin(i * 12.9898) * 43758.5453) % 1 + 1) % 1;
+
 export function initHero() {
   const hero = $('.hero');
-  const lines = $$('[data-hero-line]', hero);
-  const chars = lines.flatMap((l) => splitChars(l));
-  const dot = $('.hero__dot', hero);
+  const stage = $('[data-hero-stage]', hero);
+  const words = $$('[data-fit]', stage);
+  const main = $$('[data-hero-word]', stage);
+  const mainChars = main.flatMap((w) => splitChars(w));
+  const lensWords = words.filter((w) => !main.includes(w));
+  const lensChars = lensWords.flatMap((w) => splitChars(w));
+  words.forEach((w) => (w.dataset.fitMax = '0.5'));
+  fitText(words);
+
   const meta = $$('[data-hero-meta]', hero);
-  const tagline = $$('.hero__tagline-line, .hero__probably', hero);
-  const scroll = $('.hero__scroll', hero);
+  const tag = $('[data-hero-tag]', hero);
 
-  const MIN = 360;
-  const MAX = 900;
-  const state = chars.map(() => ({ w: 500, t: 0 }));
-  const pointer = { x: -9999, y: -9999, last: 0 };
-  let visible = true;
-  let live = false;
+  initLens(stage);
+  initCoords($('[data-coords]', hero));
 
-  window.addEventListener('pointermove', (e) => {
-    pointer.x = e.clientX;
-    pointer.y = e.clientY;
-    pointer.last = performance.now();
-  });
-
-  ScrollTrigger.create({
-    trigger: hero,
-    start: 'top bottom',
-    end: 'bottom top',
-    onToggle: (self) => (visible = self.isActive),
-  });
-
-  const radius = () => Math.max(220, window.innerWidth * 0.22);
-
-  function update(time) {
-    if (!visible || !live || reduced) return;
-    const idle = !canHover || performance.now() - pointer.last > 2600;
-    const r = radius();
-    // Read everything first, then write, to keep layout work to one pass.
-    const rects = idle ? null : chars.map((c) => c.getBoundingClientRect());
-    chars.forEach((c, i) => {
-      let t;
-      if (idle) {
-        t = Math.pow(0.5 + 0.5 * Math.sin(time * 1.6 - i * 0.55), 3);
-      } else {
-        const b = rects[i];
-        const d = Math.hypot(b.left + b.width / 2 - pointer.x, b.top + b.height / 2 - pointer.y);
-        t = Math.pow(clamp(1 - d / r), 2);
-      }
-      const s = state[i];
-      s.w = lerp(s.w, MIN + (MAX - MIN) * t, 0.12);
-      s.t = lerp(s.t, t, 0.12);
-      c.style.fontWeight = s.w.toFixed(0);
-      c.style.color = s.t > 0.02 ? `color-mix(in srgb, var(--blue) ${Math.round(s.t * 100)}%, var(--ink))` : '';
-    });
-  }
-  gsap.ticker.add(update);
-
-  // Blue dot drifts toward the cursor a little, like it's curious.
-  if (canHover && !reduced) {
-    const dx = gsap.quickTo(dot, 'x', { duration: 0.8, ease: 'power3' });
-    const dy = gsap.quickTo(dot, 'y', { duration: 0.8, ease: 'power3' });
-    hero.addEventListener('pointermove', (e) => {
-      const b = dot.getBoundingClientRect();
-      const cx = b.left + b.width / 2 - gsap.getProperty(dot, 'x');
-      const cy = b.top + b.height / 2 - gsap.getProperty(dot, 'y');
-      dx(clamp((e.clientX - cx) * 0.06, -40, 40));
-      dy(clamp((e.clientY - cy) * 0.06, -40, 40));
-    });
-    hero.addEventListener('pointerleave', () => {
-      dx(0);
-      dy(0);
-    });
-  }
-
-  // "Based somewhere on Earth": the coordinates never settle on one place.
-  const coords = $('[data-coords]', hero);
-  const randomCoords = () => {
-    const lat = rand(0, 80).toFixed(4);
-    const lon = rand(0, 179).toFixed(4);
-    return `(${lat}° ${Math.random() > 0.5 ? 'N' : 'S'}, ${lon}° ${Math.random() > 0.5 ? 'E' : 'W'})`;
-  };
-  coords.textContent = randomCoords();
   if (!reduced) {
-    setInterval(() => {
-      if (!visible) return;
-      gsap.to(coords, { duration: 1.2, scrambleText: { text: randomCoords(), chars: '0123456789', speed: 0.6 } });
-    }, 3800);
-  }
-
-  // Scroll spins the "scroll down" badge.
-  if (!reduced) {
-    gsap.to($('svg', scroll), {
-      rotation: 360,
-      ease: 'none',
-      scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.5 },
-    });
-    gsap.to($('svg', scroll), { rotation: '+=360', duration: 20, repeat: -1, ease: 'none' });
-  }
-
-  // Leaving the hero: About slides over it like a sheet, while the letters drift apart.
-  if (!reduced) {
-    const out = gsap.timeline({
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true, pin: true, pinSpacing: false },
+    // Scroll away: the letters lift off at different speeds, the rest drifts up slower.
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.4 },
       defaults: { ease: 'none' },
     });
-    out
-      .to(lines[0], { xPercent: -18 }, 0)
-      .to(lines[1], { xPercent: 14 }, 0)
-      .to(chars, { y: () => rand(-0.5, 0.3) * window.innerHeight * 0.35, rotation: () => rand(-14, 14), stagger: { each: 0.01, from: 'center' } }, 0)
-      .to([$('.hero__meta', hero), $('.hero__bottom', hero)], { opacity: 0, y: -40, stagger: 0.02 }, 0)
-      .to($('.hero__inner', hero), { scale: 0.94, transformOrigin: '50% 0%' }, 0);
-  }
+    tl.to(mainChars, { yPercent: (i) => -speed(i) * 110 }, 0)
+      .to(lensChars, { yPercent: (i) => -speed(i) * 110 }, 0)
+      .to(tag, { y: () => -window.innerHeight * 0.18 }, 0)
+      .to(meta, { y: () => -window.innerHeight * 0.1 }, 0);
 
-  // Entrance, played once the loader gets out of the way.
-  gsap.set(chars, { yPercent: 115 });
-  gsap.set(lines, { overflow: 'hidden' });
-  gsap.set([...meta, ...tagline, scroll], { opacity: 0, y: 24 });
-  gsap.set(dot, { scale: 0 });
+    gsap.set([...mainChars, ...lensChars], { yPercent: 105 });
+    gsap.set(meta, { yPercent: 110 });
+    gsap.set(tag, { clipPath: 'inset(0% 0% 100% 0%)', y: 20 });
+  }
 
   return {
     intro() {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          gsap.set(lines, { overflow: 'visible' });
-          live = true;
-        },
-      });
-      tl.to(chars, { yPercent: 0, duration: 1.3, ease: 'expo.out', stagger: 0.045 }, 0.1)
-        .to(dot, { scale: 1, duration: 1.2, ease: 'elastic.out(1, 0.4)' }, 0.8)
-        .to([...meta, ...tagline, scroll], { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.06 }, 0.5);
-      return tl;
+      if (reduced) return;
+      gsap
+        .timeline()
+        .to([mainChars, lensChars], { yPercent: 0, duration: 1.3, ease: 'expo.out', stagger: (i) => (i % mainChars.length) * 0.035 }, 0)
+        .to(meta, { yPercent: 0, duration: 1, ease: 'expo.out', stagger: 0.07 }, 0.3)
+        .to(tag, { clipPath: 'inset(0% 0% 0% 0%)', y: 0, duration: 1.1, ease: 'expo.out' }, 0.45);
     },
   };
+}
+
+function initLens(stage) {
+  const lens = $('[data-lens]', stage);
+  const inner = $('[data-lens-inner]', stage);
+  const label = $('[data-lens-label]', stage);
+  if (reduced) return lens.remove();
+  const greetings = ['Hi.', "Yes, it's me.", '(Probably)', 'Hello, human.', 'Hire me?'];
+  let g = 0;
+
+  const pos = { x: 0, y: 0, s: 0 };
+  const target = { x: 0, y: 0, s: 0 };
+  let inside = false;
+  let visible = true;
+  let bounds = stage.getBoundingClientRect();
+  const measure = () => (bounds = stage.getBoundingClientRect());
+  ScrollTrigger.addEventListener('refresh', measure);
+  ScrollTrigger.create({ trigger: stage, start: 'top bottom', end: 'bottom top', onToggle: (s) => (visible = s.isActive) });
+
+  const size = () => Math.min(bounds.height * 0.62, window.innerWidth * (canHover ? 0.22 : 0.4));
+
+  if (canHover) {
+    stage.addEventListener('pointerenter', () => {
+      inside = true;
+      label.textContent = greetings[g++ % greetings.length];
+    });
+    stage.addEventListener('pointerleave', () => (inside = false));
+    stage.addEventListener('pointermove', (e) => {
+      measure();
+      target.x = e.clientX - bounds.left;
+      target.y = e.clientY - bounds.top;
+      if (pos.s < 1) Object.assign(pos, { x: target.x, y: target.y });
+    });
+  } else {
+    label.textContent = greetings[0];
+  }
+
+  gsap.ticker.add((time) => {
+    if (!visible) return;
+    if (!canHover) {
+      // No mouse: the lens wanders slowly across the name.
+      measure();
+      target.x = bounds.width * (0.5 + 0.38 * Math.sin(time * 0.45));
+      target.y = bounds.height * (0.5 + 0.22 * Math.sin(time * 0.7 + 1));
+      target.s = size();
+    } else {
+      target.s = inside ? size() : 0;
+    }
+    const vx = target.x - pos.x;
+    pos.x = lerp(pos.x, target.x, 0.14);
+    pos.y = lerp(pos.y, target.y, 0.14);
+    pos.s = lerp(pos.s, target.s, 0.12);
+
+    // The square stretches a little in the direction you move.
+    const stretch = Math.min(Math.abs(vx) * 0.25, 60);
+    const w = pos.s + stretch;
+    const h = Math.max(pos.s - stretch * 0.4, 0);
+    const l = pos.x - w / 2;
+    const t = pos.y - h / 2;
+    lens.style.clipPath = `inset(${t}px ${bounds.width - l - w}px ${bounds.height - t - h}px ${l}px)`;
+    inner.style.transformOrigin = `${pos.x}px ${pos.y}px`;
+    inner.style.transform = 'scale(1.14)';
+    label.style.transform = `translate(${l}px, ${t}px)`;
+  });
+}
+
+// "Based somewhere on Earth": the coordinates keep changing their mind.
+function initCoords(el) {
+  if (reduced) return;
+  const fmt = (v, pos, neg) => `${Math.abs(v).toFixed(4).padStart(7, '0')}° ${v >= 0 ? pos : neg}`;
+  const next = () => {
+    const text = `${fmt(Math.random() * 160 - 80, 'N', 'S')}, ${fmt(Math.random() * 340 - 170, 'E', 'W')}`;
+    gsap.to(el, { duration: 1, scrambleText: { text, chars: '0123456789', speed: 0.6 } });
+  };
+  next();
+  setInterval(next, 3200);
 }

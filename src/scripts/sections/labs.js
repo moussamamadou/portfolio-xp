@@ -2,13 +2,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Draggable } from 'gsap/Draggable';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import { $, $$, lerp, canHover, reduced } from '../utils.js';
+import { $, $$, lerp, clamp, splitChars, fitText, canHover, reduced } from '../utils.js';
 
 /*
- * Labs: the one place with WebGL. A halftone dot field that bulges and turns blue
- * around the cursor (a "petri dish" for the experiments), a title that scrambles
- * itself, and specimen cards that fly in from three directions and can be
- * dragged around the table.
+ * Labs: the one place with WebGL. A field of tiny square dots that swell and turn
+ * blue around the cursor, a title that scans in, and spec sheets that print out
+ * and can be thrown around the table.
  */
 
 const vertex = /* glsl */ `
@@ -46,9 +45,10 @@ const fragment = /* glsl */ `
 
     vec2 dir = normalize(c - uMouse + 0.0001);
     vec2 cc = c + dir * infl * cell * 0.16;
-    float r = cell * (0.05 + 0.07 * n * n + infl * 0.26);
+    float r = cell * (0.04 + 0.05 * n * n + infl * 0.22);
 
-    float dist = distance(p, cc);
+    vec2 dd = abs(p - cc);
+    float dist = max(dd.x, dd.y);
     float a = 1.0 - smoothstep(r - 1.0 * uDpr, r, dist);
     vec3 col = mix(uInk, uBlue, smoothstep(0.05, 0.6, infl));
     float alpha = a * mix(0.16 + 0.12 * n, 1.0, smoothstep(0.0, 0.5, infl));
@@ -142,83 +142,79 @@ export function initLabs() {
   const section = $('#labs');
   initField(section);
 
-  // Title scrambles into place, and again whenever you poke it.
+  // "Labs" is set edge to edge and comes in like a scan: alternate letters
+  // wipe open from the top and from the bottom.
+  const big = $('[data-labs-big]', section);
+  const chars = splitChars(big);
+  fitText([big]);
+  if (!reduced) {
+    gsap.fromTo(
+      chars,
+      { clipPath: (i) => (i % 2 ? 'inset(100% -30% -10% -30%)' : 'inset(-10% -30% 100% -30%)') },
+      {
+        clipPath: 'inset(-10% -30% -10% -30%)',
+        ease: 'none',
+        stagger: 0.12,
+        scrollTrigger: { trigger: big, start: 'top 95%', end: 'top 35%', scrub: 0.6 },
+      },
+    );
+  }
+
+  // The subtitle scrambles into place, and again whenever you poke it.
   const sub = $('[data-scramble]', section);
   const text = sub.textContent;
   const scramble = () =>
-    gsap.to(sub, { duration: 1.6, scrambleText: { text, chars: '!<>-_\\/[]{}=+*^?#01', revealDelay: 0.2, speed: 0.5 } });
+    gsap.to(sub, { duration: 1.4, scrambleText: { text, chars: 'ABCDEFGHKMNOPRSTUXZ/_+', revealDelay: 0.2, speed: 0.5 } });
   if (!reduced) {
     ScrollTrigger.create({ trigger: sub, start: 'top 85%', onEnter: scramble });
     sub.addEventListener('pointerenter', scramble);
-    gsap.from($('.labs__title-big', section), {
-      letterSpacing: '0.2em',
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: { trigger: section, start: 'top 90%', end: 'top 30%', scrub: true },
+  }
+
+  // Sheets print out: each one feeds down out of an invisible slot.
+  const sheets = $$('[data-sheet]', section);
+  const table = $('[data-labs-table]', section);
+  if (!reduced) {
+    sheets.forEach((sheet, i) => {
+      gsap.fromTo(
+        $('[data-sheet-paper]', sheet),
+        { clipPath: 'inset(0% 0% 100% 0%)', yPercent: -12 },
+        {
+          clipPath: 'inset(0% 0% 0% 0%)',
+          yPercent: 0,
+          ease: 'none',
+          scrollTrigger: { trigger: table, start: `top ${92 - i * 8}%`, end: `top ${45 - i * 8}%`, scrub: 0.6 },
+        },
+      );
     });
   }
 
-  // Specimens: fly in from the left, the top and the right, then they're yours to drag.
-  const specimens = $$('[data-specimen]', section);
-  const table = $('[data-labs-table]', section);
+  // On desktop they're loose on the table: drag them, throw them, they tilt as they go.
   const mm = gsap.matchMedia();
   mm.add('(min-width: 1000px)', () => {
     section.classList.add('labs--scatter');
-    if (!reduced) {
-      specimens.forEach((s) => {
-        const from = s.dataset.from;
-        const vars = {
-          left: { x: -window.innerWidth * 0.6, rotation: -35 },
-          top: { y: -window.innerHeight * 0.7, rotation: 25 },
-          right: { x: window.innerWidth * 0.6, rotation: 40 },
-        }[from];
-        gsap.from(s, {
-          ...vars,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: table, start: 'top 95%', end: 'top 35%', scrub: 1 },
-        });
-      });
-    }
-    const drags = Draggable.create($$('[data-specimen-card]', section), {
+    const papers = $$('[data-sheet]', section);
+    const drags = Draggable.create(papers, {
       type: 'x,y',
       bounds: section,
       inertia: true,
       zIndexBoost: true,
       dragClickables: false,
       onPress() {
-        gsap.to(this.target, { scale: 1.04, duration: 0.3 });
+        $('[data-sheet-paper]', this.target).classList.add('is-dragging');
       },
-      onDragStart() {
-        this.target.classList.add('is-dragging');
+      onDrag() {
+        gsap.to($('[data-sheet-paper]', this.target), { rotation: clamp(this.deltaX * 0.6, -12, 12), duration: 0.4, overwrite: 'auto' });
       },
       onRelease() {
-        this.target.classList.remove('is-dragging');
-        gsap.to(this.target, { scale: 1, rotationX: 0, rotationY: 0, duration: 0.5 });
+        const paper = $('[data-sheet-paper]', this.target);
+        paper.classList.remove('is-dragging');
+        gsap.to(paper, { rotation: 0, duration: 1, ease: 'elastic.out(1, 0.4)' });
       },
     });
     return () => {
       drags.forEach((d) => d.kill());
-      gsap.set($$('[data-specimen-card]', section), { clearProps: 'transform' });
+      gsap.set(papers, { clearProps: 'transform' });
       section.classList.remove('labs--scatter');
     };
   });
-
-  // Cards tilt toward the cursor, like they're being inspected.
-  if (canHover && !reduced) {
-    $$('[data-specimen-card]', section).forEach((card) => {
-      const rx = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
-      const ry = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
-      gsap.set(card, { transformPerspective: 900 });
-      card.addEventListener('pointermove', (e) => {
-        if (card.classList.contains('is-dragging')) return;
-        const b = card.getBoundingClientRect();
-        rx(((e.clientY - b.top) / b.height - 0.5) * -14);
-        ry(((e.clientX - b.left) / b.width - 0.5) * 14);
-      });
-      card.addEventListener('pointerleave', () => {
-        rx(0);
-        ry(0);
-      });
-    });
-  }
 }

@@ -15,43 +15,48 @@ npm run preview  # serve the build
 
 Requires Node 22.12+.
 
+## Art direction
+
+Editorial and monochrome: a 12-column grid (4 on mobile), one typeface (Figtree, used from 300 to 900), small text sitting in grid cells, huge display type fitted edge to edge, hairline rules instead of cards and shadows. Blue is kept for accents and the Contact flood. Press `G` anywhere to see the grid.
+
 ## The loading screen
 
-The loader changes with the number of visits (stored in `localStorage` under `mm-portfolio:visits`):
+One quiet layout for every visit: the name, a line of copy, a hairline and an odometer counting to 100. The visit count (stored in `localStorage` under `mm-portfolio:visits`) changes how long it takes and what it says:
 
 | Visit | Loader |
 | --- | --- |
-| 1 | The dramatic: fake boot log, orbiting shapes, giant percentage, an Enter button that swallows the screen |
-| 2 | The self-aware: three lines of copy and a modest progress bar |
-| 3 | The real: `Loading...` and a thin bar |
-| 4+ | `Loading...` → `You come here often.` |
+| 1 | Four short lines ("Loading a portfolio." … "Please act impressed.") over a counter that jumps unevenly, about two seconds |
+| 2 | "Oh, you're back." / "Shorter version then." |
+| 3 | "Loading. For real this time." |
+| 4+ | "You come here often." and straight in |
 
 Preview any of them without touching your count: `/?visit=1`, `/?visit=2`, `/?visit=3`, `/?visit=4`.
-The footer also has a **Reset the drama** button. `Esc` skips any loader.
+The footer also has a **Reset the drama** button. `Esc` or **Skip** ends any loader.
 
 ## One idea per section
 
 | Section | Interaction |
 | --- | --- |
-| Nav | A pill slides to the active section or hovered link; letters roll on hover; tucks away on scroll down; circular reveal menu on mobile |
-| Hero | Variable-weight letters swell and turn blue near the cursor (a wave runs through them on touch); the name drifts apart as About slides over it like a sheet |
-| About | Title letters assemble from scattered positions; the paragraph reads itself with the scroll; “Yes, it's possible.” lands like a stamp; the story is a winding route drawn by the scroll; the formula's pieces slide together |
-| Work | The page turns sideways; each project's giant number swells and turns blue at the centre, its visual opens like a shutter, a counter keeps score |
-| Labs | A WebGL halftone field that bulges and turns blue around the cursor; a scrambling title; specimen cards fly in from three directions and can be dragged around |
-| Expertise | A physics playground: skills drop in as pills you can grab, throw and shake; the legend makes pills jump; the title's weight ripples with the scroll |
-| Recognition | Fake award certificates dealt off a pinned stack; jury scores fill and a “Not a real award” stamp lands on each; a side ribbon slides in |
-| Contact | Blue finally floods the page; “extraordinary” bounces in and keeps breathing; copy-to-clipboard with attitude; a marquee that follows your scroll direction |
+| Nav | Small editorial bar; links shuffle their letters on hover; a blue square marks the section you're in; the name folds to its initials after the hero; the mobile menu wipes down with rising links |
+| Hero | The name is fitted edge to edge; a square blue lens follows the cursor and magnifies the letters under it in light italic (it wanders on its own on touch); scrolling lifts each letter at its own speed |
+| About | The title settles out of an SVG turbulence warp; the intro types itself behind a blue caret; “Yes, it's possible.” unfurls from the baseline; the story is an index a blue square travels down; the formula's fitted lines slide in from alternate sides |
+| Work | A window in the heading grows on scroll until it pushes the words off screen, flicking through the projects; then an index where the centred row is in focus and hovering brings up a cover that trails and leans with the cursor |
+| Labs | A WebGL field of square dots that swell and turn blue near the cursor; “Labs” scans in letter by letter; spec sheets print out and can be thrown around the table |
+| Expertise | A physics playground on graph paper: skills drop in as tags you can grab, throw and shake; the legend makes tags jump; the title's weight ripples with the scroll |
+| Recognition | Fake certificates on a pinned pile, torn off one by one; jury scores count in and a “Not a real award” stamp lands on each |
+| Contact | Twelve blue columns drop in and flood the page; fitted headline lines rise, “extraordinary” keeps breathing; copy-to-clipboard with attitude; a marquee that follows your scroll direction |
+
+Some of the motion borrows from Codrops experiments (mouse-following lens, scroll-driven SVG filters on text, on-scroll expanding image, clip-path menus), remixed for this layout.
 
 `prefers-reduced-motion` turns off smooth scrolling, pinning and scrubbed motion, and uses the short loader.
 
 ## Editing content
 
-All copy (projects, labs, skills, awards, links) lives in [`src/data/content.js`](src/data/content.js).
-Fields still waiting on real info are marked `TBD` and show as dashed placeholders on the page:
+All copy (projects, labs, skills, awards, links) lives in [`src/data/content.js`](src/data/content.js). Still waiting on real info:
 
 - A one-line category for Chery France and SATEP (currently "Website")
 - Direct CodePen / Webflow links for each Labs clonable (they point to the profiles for now)
 
 Stacks and links for Julien Calot, JOHNROOCKS, Le Marché des Argonautes, Chery France and SATEP come from moussamamadou.com. JOHNROOCKS and Florence Jeev show "Launching soon" (`link: 'soon'`).
 
-Project visuals are CSS placeholder compositions (`.art--*` in `src/styles/global.css`); swap them for real images inside `.project__visual`.
+Project covers are typographic CSS placeholders (`.cover--*` in `src/styles/global.css`, rendered by `src/components/Cover.astro`); swap them for real images there.

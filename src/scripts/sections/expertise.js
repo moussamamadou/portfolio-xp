@@ -6,9 +6,9 @@ import { $, $$, splitChars, rand, reduced } from '../utils.js';
 const { Engine, Bodies, Body, Composite, Constraint } = Matter;
 
 /*
- * Expertise: a physics playground. Every skill is a pill that drops into the box
- * when you arrive; grab them, throw them, shake the box. Hovering the legend makes
- * the matching pill jump. The title's weight ripples with the scroll.
+ * Expertise: a physics playground on graph paper. Every skill is a tag that drops
+ * into the box when you arrive; grab them, throw them, shake the box. Hovering
+ * the legend makes the matching tag jump. The title's weight ripples with the scroll.
  */
 export function initExpertise() {
   const section = $('#expertise');
@@ -35,7 +35,7 @@ export function initExpertise() {
 
 function initPlayground(section) {
   const box = $('[data-playground]', section);
-  const pills = $$('[data-pill]', box);
+  const pills = $$('[data-tag]', box);
   const engine = Engine.create({ gravity: { y: 1.1 } });
   const world = engine.world;
   const items = [];
@@ -47,6 +47,7 @@ function initPlayground(section) {
   const buildWalls = (withCeiling) => {
     Composite.remove(world, walls);
     const { width: w, height: h } = box.getBoundingClientRect();
+    const top = $('.playground__bar', box).offsetHeight;
     size = { w, h };
     const t = 400;
     walls = [
@@ -54,7 +55,7 @@ function initPlayground(section) {
       Bodies.rectangle(-t / 2, h / 2 - 1000, t, h * 2 + 2000, { isStatic: true }),
       Bodies.rectangle(w + t / 2, h / 2 - 1000, t, h * 2 + 2000, { isStatic: true }),
     ];
-    if (withCeiling) walls.push(Bodies.rectangle(w / 2, -t / 2, w * 3, t, { isStatic: true }));
+    if (withCeiling) walls.push(Bodies.rectangle(w / 2, top - t / 2, w * 3, t, { isStatic: true }));
     Composite.add(world, walls);
   };
 
@@ -63,8 +64,7 @@ function initPlayground(section) {
     pills.forEach((el, i) => {
       const pw = el.offsetWidth;
       const ph = el.offsetHeight;
-      const body = Bodies.rectangle(rand(pw / 2 + 10, w - pw / 2 - 10), -ph - i * 90 - rand(0, 60), pw, ph, {
-        chamfer: { radius: ph / 2 },
+      const body = Bodies.rectangle(rand(pw / 2 + 10, w - pw / 2 - 10), -ph - i * 36 - rand(0, 40), pw, ph, {
         restitution: 0.45,
         friction: 0.08,
         frictionAir: 0.012,
@@ -95,7 +95,7 @@ function initPlayground(section) {
 
   ScrollTrigger.create({
     trigger: box,
-    start: 'top 70%',
+    start: 'top 85%',
     end: 'bottom top',
     onEnter: start,
     onEnterBack: start,
@@ -139,7 +139,7 @@ function initPlayground(section) {
     return { x: e.clientX - b.left, y: e.clientY - b.top };
   };
   box.addEventListener('pointerdown', (e) => {
-    const el = e.target.closest('[data-pill]');
+    const el = e.target.closest('[data-tag]');
     if (!el || !started) return;
     const item = items.find((it) => it.el === el);
     if (!item) return;
@@ -175,9 +175,9 @@ function initPlayground(section) {
   box.addEventListener('pointerup', release);
   box.addEventListener('pointercancel', release);
 
-  // Hovering a pill shows its note in the cursor bubble.
+  // Hovering a tag shows its note in the cursor label.
   pills.forEach((el) => {
-    el.dataset.cursor = $('.pill__note', el).textContent;
+    el.dataset.cursor = el.dataset.note;
   });
 
   const kick = (item, strength = 1) => {

@@ -1,0 +1,13 @@
+---
+// Typographic placeholder cover for a project until real visuals are added.
+interface Props {
+  project: { num: string; title: string; kind: string; art: string };
+}
+const { project: p } = Astro.props;
+---
+
+<div class={`cover cover--${p.art}`}>
+  <div class="cover__motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="cover__top t-small"><span>{p.title}</span><span>Placeholder</span></p>
+  <p class="cover__num">{p.num}</p>
+</div>

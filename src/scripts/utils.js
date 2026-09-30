@@ -56,3 +56,64 @@ export function maskWords(el, text) {
 }
 
 export const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/*
+ * Fit-to-width type: every [data-fit] element is sized so its text spans the
+ * width of its parent's content box exactly. Optional data-fit-max caps the
+ * size as a fraction of the viewport height (e.g. 0.3).
+ */
+const fitted = new Set();
+export function fitText(els) {
+  els.forEach((el) => fitted.add(el));
+  refit(els);
+}
+export function refit(els = fitted) {
+  els.forEach((el) => {
+    const parent = el.parentElement;
+    const cs = getComputedStyle(parent);
+    const avail = parent.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    el.style.fontSize = '100px';
+    // Negative tracking leaves the last glyph hanging past the box; count it in.
+    const ls = parseFloat(getComputedStyle(el).letterSpacing) || 0;
+    const w = (el.getBoundingClientRect().width || 1) - Math.min(ls, 0);
+    let size = (100 * avail) / w;
+    const max = parseFloat(el.dataset.fitMax || '');
+    if (max) size = Math.min(size, window.innerHeight * max);
+    el.style.fontSize = `${size.toFixed(2)}px`;
+  });
+}
+
+/*
+ * Letter shuffle: characters cycle through random glyphs and settle back in
+ * order, left to right. Used on nav and text links on hover.
+ */
+const UPPER = 'ABCDEFGHKMNOPRSTUXZ#/+';
+const LOWER = 'abcdeghknopqrsuxz_-*';
+export function shuffle(el, text = el.dataset.text || el.textContent) {
+  el.dataset.text = text;
+  if (el._shuffle) cancelAnimationFrame(el._shuffle);
+  // Lock the width so neighbours don't jiggle while glyphs change size.
+  el.style.display = 'inline-block';
+  el.style.width = '';
+  el.style.width = `${el.getBoundingClientRect().width}px`;
+  el.style.whiteSpace = 'nowrap';
+  const start = performance.now();
+  const dur = 36 * text.length + 180;
+  const frame = (now) => {
+    const t = (now - start) / dur;
+    let out = '';
+    for (let i = 0; i < text.length; i++) {
+      const settle = i / text.length;
+      const c = text[i];
+      const set = c === c.toLowerCase() ? LOWER : UPPER;
+      out += c === ' ' || t > settle + 0.15 ? c : set[(Math.random() * set.length) | 0];
+    }
+    el.textContent = out;
+    if (t < 1.15) el._shuffle = requestAnimationFrame(frame);
+    else {
+      el.textContent = text;
+      el.style.width = '';
+    }
+  };
+  el._shuffle = requestAnimationFrame(frame);
+}

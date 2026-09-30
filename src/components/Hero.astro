@@ -1,30 +1,46 @@
+---
+const name = ['Moussa', 'Mamadou'];
+---
+
 <section class="hero" id="top" aria-label="Intro">
-  <div class="hero__inner">
-    <div class="hero__meta mono">
-      <p data-hero-meta>Creative Developer — Independent</p>
-      <p data-hero-meta class="hero__where">
-        Based somewhere on Earth <span class="hero__coords" data-coords>(0.0000° N, 0.0000° E)</span>
-      </p>
-    </div>
+  <div class="hero__meta grid t-small">
+    <p class="hero__cell hero__cell--a" data-hero-meta>(Portfolio ©2026)</p>
+    <p class="hero__cell hero__cell--b" data-hero-meta>(00)<br />Intro</p>
+    <p class="hero__cell hero__cell--c" data-hero-meta>
+      Based somewhere on Earth<br /><span class="hero__coords" data-coords>00.0000° N, 00.0000° E</span>
+    </p>
+    <p class="hero__cell hero__cell--d" data-hero-meta>Scroll ↓</p>
+  </div>
 
-    <h1 class="hero__name" aria-label="Moussa Mamadou">
-      <span class="hero__line hero__line--1" aria-hidden="true" data-hero-line>Moussa</span>
-      <span class="hero__line hero__line--2" aria-hidden="true" data-hero-line>Mamadou<span class="hero__dot"></span></span>
+  <div class="hero__tagline grid">
+    <p class="hero__tag" data-hero-tag>
+      If You Can Dream It,<br />I Can Code It <span class="hero__probably">(Probably)</span>.
+    </p>
+  </div>
+
+  <div class="hero__stage" data-hero-stage>
+    <h1 class="hero__name" aria-label="Moussa Mamadou" data-hero-name>
+      {
+        name.map((w) => (
+          <span class="hero__line" aria-hidden="true">
+            <span class="hero__word" data-fit data-hero-word>{w}</span>
+          </span>
+        ))
+      }
     </h1>
-
-    <div class="hero__bottom">
-      <p class="hero__tagline" data-hero-tagline>
-        <span class="hero__tagline-line">If you can dream it,</span>
-        <span class="hero__tagline-line">I can code it<span class="hero__probably">(Probably)</span>.</span>
-      </p>
-
-      <a href="#about" class="hero__scroll" data-scroll-to aria-label="Scroll to About">
-        <svg viewBox="0 0 120 120" aria-hidden="true">
-          <defs><path id="circle-path" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" /></defs>
-          <text><textPath href="#circle-path">scroll down • keep going • it gets better • </textPath></text>
-        </svg>
-        <span class="hero__scroll-arrow" aria-hidden="true">↓</span>
-      </a>
+    <div class="hero__lens" aria-hidden="true" data-lens>
+      <div class="hero__lens-inner" data-lens-inner>
+        <div class="hero__name hero__name--lens">
+          {
+            name.map((w) => (
+              <span class="hero__line">
+                <span class="hero__word" data-fit>{w}</span>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+      <span class="hero__lens-label t-small" data-lens-label>Hi.</span>
     </div>
   </div>
 </section>

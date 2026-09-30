@@ -1,86 +1,61 @@
 ---
 import { projects } from '../data/content.js';
+import SectionHead from './SectionHead.astro';
+import Cover from './Cover.astro';
+const live = (p) => p.link && p.link !== 'soon';
 ---
 
 <section class="work section" id="work" aria-labelledby="work-title">
-  <div class="work__head">
-    <div class="section__label mono"><span>(02)</span><span>Work</span></div>
-    <h2 class="work__title" id="work-title" data-mask-lines>Projects I'm<br />Proud Of</h2>
-    <p class="work__sub" data-mask-lines>A selection of work where creativity meets clean code.</p>
-    <p class="work__hint mono" aria-hidden="true">Keep scrolling, it goes sideways →</p>
+  <SectionHead num="02" label="Work" note="Selected projects" count={`(${String(projects.length).padStart(2, '0')})`} />
+
+  <div class="work__intro" data-work-intro>
+    <h2 class="work__title" id="work-title">
+      <span class="work__title-line" data-work-line><span>Projects</span><span class="work__grow" data-work-grow aria-hidden="true"><span class="work__reel" data-work-reel>{projects.map((p) => <Cover project={p} />)}</span></span><span>I'm</span></span>
+      <span class="work__title-line" data-work-line>Proud Of</span>
+    </h2>
+    <p class="work__sub t-small grid"><span>A selection of work where creativity meets clean code.</span></p>
   </div>
 
-  <div class="work__pin" data-work-pin>
-    <div class="work__counter mono" aria-hidden="true">
-      <span class="work__counter-window"><span class="work__counter-reel" data-counter-reel>{projects.map((p) => <span>{p.num}</span>)}</span></span>
-      <span>/ 0{projects.length}</span>
+  <div class="work__index" data-work-index>
+    <div class="work__labels grid t-small" aria-hidden="true">
+      <span class="wl-num">No.</span><span class="wl-title">Project</span><span class="wl-kind">Type</span><span class="wl-stack">Stack</span><span class="wl-link">Link</span>
     </div>
-    <div class="work__track" data-work-track>
+    <ol class="work__list">
       {
-        projects.map((p) => (
-          <article class="project" data-project>
-            <span class="project__num" aria-hidden="true" data-project-num>
-              {p.num}
-            </span>
-            {p.link && p.link !== 'soon' ? (
-              <a class="project__visual" href={p.link} target="_blank" rel="noopener" data-cursor="Visit" data-project-visual aria-label={`Visit ${p.title}`}>
-                <div class={`art art--${p.art}`} aria-hidden="true"><i /><i /><i /><i /><i /><i /></div>
-                <span class="project__visual-note mono">Placeholder visual</span>
-              </a>
+        projects.map((p, i) => (
+          <li class="row" data-row data-index={i}>
+            {live(p) ? (
+              <a class="row__hit" href={p.link} target="_blank" rel="noopener" aria-label={`Visit ${p.title}`} data-cursor="Visit ↗" />
             ) : (
-            <div class="project__visual" data-cursor="Soon" data-project-visual>
-              <div class={`art art--${p.art}`} aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
-              </div>
-              <span class="project__visual-note mono">Placeholder visual</span>
-            </div>
+              <span class="row__hit" data-cursor="Launching soon" />
             )}
-            <div class="project__body">
-              <p class="project__kind mono">{p.num} — {p.kind}</p>
-              <h3 class="project__title" data-project-title>
-                {p.title}
+            <div class="row__inner grid">
+              <span class="row__rule" aria-hidden="true" />
+              <span class="row__num t-small">{p.num}</span>
+              <h3 class="row__title">
+                <span class="row__title-text" data-row-title>{p.title}</span>
               </h3>
-              {p.description && <p class="project__desc">{p.description}</p>}
-              <dl class="project__meta">
-                <div>
-                  <dt class="mono">Role</dt>
-                  <dd class:list={[{ tbd: p.role === 'TBD' }]}>{p.role}</dd>
-                </div>
-                <div>
-                  <dt class="mono">Stack</dt>
-                  <dd class:list={[{ tbd: p.stack[0] === 'TBD' }]}>{p.stack.join(' · ')}</dd>
-                </div>
-                <div>
-                  <dt class="mono">Link</dt>
-                  <dd>
-                    {p.link === 'soon' ? (
-                      <span class="soon mono">Launching soon</span>
-                    ) : p.link ? (
-                      <a href={p.link} target="_blank" rel="noopener" class="link">
-                        Visit site ↗
-                      </a>
-                    ) : (
-                      <span class="tbd">TBD</span>
-                    )}
-                  </dd>
-                </div>
-              </dl>
+              <span class="row__kind t-small">{p.kind}<br />Role: {p.role}</span>
+              <span class="row__stack t-small">{p.stack.join(', ')}</span>
+              <span class="row__link t-small">{live(p) ? <>Visit <span class="row__arrow">↗</span></> : 'Launching soon'}</span>
             </div>
-          </article>
+            {p.description && <p class="row__desc grid"><span>{p.description}</span></p>}
+            <div class="row__cover" aria-hidden="true">
+              <Cover project={p} />
+            </div>
+          </li>
         ))
       }
-      <div class="work__end">
-        <p class="work__end-q">Want to build something cool too?</p>
-        <a href="#contact" class="btn btn--blue btn--xl" data-scroll-to data-magnetic>
-          <span class="btn__label"><span class="roll" data-roll>Let's do it</span></span>
-          <span class="btn__arrow" aria-hidden="true">→</span>
-        </a>
-      </div>
+    </ol>
+    <a href="#contact" class="work__end grid" data-scroll-to>
+      <span class="work__end-q t-small">Want to build something cool too?</span>
+      <span class="work__end-cta">Let's do it <span class="work__end-arrow">→</span></span>
+    </a>
+  </div>
+
+  <div class="preview" aria-hidden="true" data-preview>
+    <div class="preview__inner" data-preview-inner>
+      {projects.map((p) => <div class="preview__slide" data-preview-slide><Cover project={p} /></div>)}
     </div>
   </div>
 </section>

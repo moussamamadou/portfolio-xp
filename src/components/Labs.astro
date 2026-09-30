@@ -1,58 +1,61 @@
 ---
 import { labs, person } from '../data/content.js';
-const entries = ['left', 'top', 'right'];
+import SectionHead from './SectionHead.astro';
 ---
 
 <section class="labs section" id="labs" aria-labelledby="labs-title">
   <canvas class="labs__field" data-labs-field aria-hidden="true"></canvas>
+  <SectionHead num="03" label="Labs" note="Clonables & experiments" count="(03)" />
 
-  <div class="labs__head">
-    <div class="section__label mono"><span>(03)</span><span>Labs</span></div>
-    <h2 class="labs__title" id="labs-title">
-      <span class="labs__title-big">LABS</span>
-      <span class="labs__title-sub" data-scramble>Where Creativity Runs Wild</span>
-    </h2>
-    <p class="labs__intro">A collection of experimental projects built to flex and show off my creative muscle.</p>
+  <h2 class="labs__title" id="labs-title">
+    <span class="labs__big" data-fit data-labs-big>Labs</span>
+    <span class="labs__sub grid"><span data-scramble>Where Creativity Runs Wild</span></span>
+  </h2>
+
+  <div class="labs__intro grid">
+    <p>A collection of experimental projects built to flex and show off my creative muscle.</p>
+    <p class="t-small labs__hint">(These are draggable. Go on, make a mess.)</p>
   </div>
 
   <div class="labs__table" data-labs-table>
-    <p class="labs__drag-hint mono" aria-hidden="true">These are draggable. Go on, make a mess.</p>
     {
       labs.map((lab, i) => (
-        <article class="specimen" data-specimen data-from={entries[i]}>
-          <div class="specimen__card" data-specimen-card data-cursor="Drag">
-          <div class="specimen__top mono">
-            <span>Clonable {lab.num}</span>
-            <span class="specimen__barcode" aria-hidden="true" />
-          </div>
-          <h3 class="specimen__title">{lab.title}</h3>
-          <ul class="specimen__tools">
-            {lab.tools.map((t) => (
-              <li>{t}</li>
-            ))}
-          </ul>
-          <div class="specimen__links">
-            <a href={lab.codepen ?? person.codepen} target="_blank" rel="noopener" class="specimen__link">
-              CodePen ↗
-            </a>
-            <a href={lab.webflow ?? person.webflow} target="_blank" rel="noopener" class="specimen__link">
-              Webflow ↗
-            </a>
-          </div>
-          {!lab.codepen && <p class="specimen__note mono">Links go to profiles until the direct ones are added</p>}
+        <article class="sheet" data-sheet>
+          <div class="sheet__paper" data-sheet-paper data-cursor="Drag">
+            <div class="sheet__head t-small">
+              <span>Clonable {lab.num}/03</span>
+              <span>MM—LAB</span>
+            </div>
+            <h3 class="sheet__title">{lab.title}</h3>
+            <table class="sheet__tools t-small">
+              <tbody>
+                {lab.tools.map((t, j) => (
+                  <tr>
+                    <td>{String(j + 1).padStart(2, '0')}</td>
+                    <td>{t}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div class="sheet__links t-small">
+              <a href={lab.codepen ?? person.codepen} target="_blank" rel="noopener">CodePen ↗</a>
+              <a href={lab.webflow ?? person.webflow} target="_blank" rel="noopener">Webflow ↗</a>
+            </div>
+            {!lab.codepen && <p class="sheet__note t-small">Links go to profiles until the direct ones are added.</p>}
+            <span class="sheet__code" aria-hidden="true">{`0${i + 1}`}</span>
           </div>
         </article>
       ))
     }
   </div>
 
-  <div class="labs__foot">
+  <div class="labs__foot grid">
     <p class="labs__copy">
-      These experiments are more than just code, they're <em>playgrounds for creativity</em>. Feel free to explore, clone, and steal some inspiration.
+      These experiments are more than just code, they're playgrounds for creativity. Feel free to explore, clone, and steal some inspiration.
     </p>
-    <div class="labs__profiles">
-      <a href={person.webflow} target="_blank" rel="noopener" class="btn btn--line" data-magnetic>Clonables on Webflow <span class="btn__arrow" aria-hidden="true">↗</span></a>
-      <a href={person.codepen} target="_blank" rel="noopener" class="btn btn--line" data-magnetic>CodePen <span class="btn__arrow" aria-hidden="true">↗</span></a>
+    <div class="labs__profiles t-small">
+      <a href={person.webflow} target="_blank" rel="noopener" class="tlink" data-shuffle><span class="shuf">Clonables on Webflow</span> ↗</a>
+      <a href={person.codepen} target="_blank" rel="noopener" class="tlink" data-shuffle><span class="shuf">CodePen</span> ↗</a>
     </div>
   </div>
 </section>

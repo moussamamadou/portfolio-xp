@@ -1,155 +1,169 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SplitType from 'split-type';
-import { $, $$, splitChars, rand, reduced } from '../utils.js';
+import { $, $$, splitChars, fitText, reduced } from '../utils.js';
 
 /*
- * About: the title assembles itself from scattered letters, the intro paragraph
- * "reads itself" as you scroll, the answer gets stamped on the page, and the
- * story is drawn as a winding route that lights up each stop.
+ * About:
+ * 1. The title comes in warped through an SVG turbulence filter and settles as
+ *    you scroll (after Codrops' scroll-based SVG filter text experiments).
+ * 2. The intro types itself behind a blue caret, driven by the scroll.
+ * 3. "Yes, it's possible." unfurls letter by letter from the baseline.
+ * 4. The story is an index; a blue square travels down it, lighting each stop.
+ * 5. The formula is a poster of fitted lines that slide in from alternate sides.
  */
 export function initAbout() {
   const section = $('#about');
+  initWarp(section);
+  initTyping(section);
+  initUnfurl(section);
+  initStory(section);
+  initFormula(section);
+}
 
-  // 1. Title letters fly in from above and below and snap into place.
-  $$('[data-scatter]', section).forEach((line, li) => {
-    const chars = splitChars(line);
-    if (reduced) return;
-    gsap.from(chars, {
-      yPercent: (i) => (i % 2 ? 1 : -1) * rand(90, 220),
-      xPercent: () => rand(-60, 60),
-      rotation: () => rand(-50, 50),
-      opacity: 0,
-      ease: 'none',
-      stagger: { each: 0.02, from: li ? 'end' : 'start' },
-      scrollTrigger: { trigger: line, start: 'top 95%', end: 'top 45%', scrub: 1 },
-    });
-  });
-
-  // 2. The lead paragraph fills in word by word with the scroll.
-  const lead = $('[data-fill]', section);
-  const words = new SplitType(lead, { types: 'words' }).words;
-  if (!reduced) {
-    gsap.fromTo(
-      words,
-      { opacity: 0.12 },
-      {
-        opacity: 1,
-        ease: 'none',
-        stagger: 0.1,
-        scrollTrigger: { trigger: lead, start: 'top 80%', end: 'bottom 50%', scrub: true },
-      },
-    );
-  }
-
-  // 3. "Yes, it's possible." lands like a rubber stamp and shakes the page a little.
-  const stamp = $('[data-stamp]', section);
-  const note = $('[data-stamp-note]', section);
-  if (!reduced) {
-    gsap.set(stamp, { scale: 3.2, rotation: -18, opacity: 0 });
-    gsap.set(note, { opacity: 0 });
-    ScrollTrigger.create({
-      trigger: stamp,
-      start: 'top 75%',
-      once: true,
-      onEnter: () => {
-        gsap
-          .timeline()
-          .to(stamp, { scale: 1, rotation: -4, opacity: 1, duration: 0.45, ease: 'power4.in' })
-          .fromTo(section, { x: -10 }, { x: 0, duration: 0.6, ease: 'elastic.out(1.2, 0.2)', clearProps: 'x' })
-          .to(note, { opacity: 1, duration: 0.2 }, '-=0.4')
-          .to(note, { duration: 1.4, scrambleText: { text: note.textContent, chars: 'lowerCase', speed: 0.5 } }, '<');
-      },
-    });
-  }
-
-  // 4. The route: an SVG path threaded through each stop, drawn by the scroll.
-  const route = $('[data-route]', section);
-  const svg = $('.route__svg', route);
-  const path = $('.route__path', route);
-  const ghost = $('.route__ghost', route);
-  const stops = $$('[data-stop]', route);
-
-  const buildPath = () => {
-    const box = route.getBoundingClientRect();
-    const pts = $$('[data-dot]', route).map((d) => {
-      const b = d.getBoundingClientRect();
-      return { x: b.left + b.width / 2 - box.left, y: b.top + b.height / 2 - box.top };
-    });
-    const first = { x: pts[0].x, y: 0 };
-    const all = [first, ...pts];
-    let d = `M ${first.x} ${first.y}`;
-    for (let i = 1; i < all.length; i++) {
-      const a = all[i - 1];
-      const b = all[i];
-      // Vertical tangents keep each leg in the corridor between the cards,
-      // and the corridor zig-zags: an unconventional route, drawn literally.
-      const k = (b.y - a.y) * 0.55;
-      d += ` C ${a.x} ${a.y + k}, ${b.x} ${b.y - k}, ${b.x} ${b.y}`;
-    }
-    const last = all[all.length - 1];
-    d += ` L ${last.x} ${box.height}`;
-    svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
-    path.setAttribute('d', d);
-    ghost.setAttribute('d', d);
-    const len = path.getTotalLength();
-    path.style.strokeDasharray = `${len}`;
-    return len;
+function initWarp(section) {
+  const title = $('[data-warp]', section);
+  const map = $('[data-warp-map]', section);
+  const noise = $('[data-warp-noise]', section);
+  if (reduced) return;
+  const state = { s: 160, f: 0.03 };
+  const apply = () => {
+    map.setAttribute('scale', state.s.toFixed(1));
+    noise.setAttribute('baseFrequency', `${(state.f * 0.4).toFixed(4)} ${state.f.toFixed(4)}`);
+    title.style.filter = state.s > 0.5 ? 'url(#warp)' : 'none';
   };
-
-  let len = buildPath();
-  ScrollTrigger.addEventListener('refreshInit', () => {
-    len = buildPath();
+  apply();
+  gsap.to(state, {
+    s: 0,
+    f: 0.004,
+    ease: 'power2.out',
+    onUpdate: apply,
+    scrollTrigger: { trigger: title, start: 'top 95%', end: 'top 35%', scrub: 0.6 },
   });
+  gsap.from($$('.about__title-line', title), {
+    xPercent: (i) => (i ? 8 : -8),
+    ease: 'none',
+    scrollTrigger: { trigger: title, start: 'top 95%', end: 'top 35%', scrub: 0.6 },
+  });
+}
+
+function initTyping(section) {
+  const lead = $('[data-type]', section);
+  const chars = splitChars(lead);
+  if (reduced) return;
+  lead.style.position = 'relative';
+  const caret = document.createElement('span');
+  caret.className = 'about__caret';
+  caret.setAttribute('aria-hidden', 'true');
+  caret.style.position = 'absolute';
+  caret.style.left = '0';
+  caret.style.top = '0';
+  lead.appendChild(caret);
+
+  let typed = -1;
+  const place = (n) => {
+    if (n === typed) return;
+    typed = n;
+    chars.forEach((c, i) => c.classList.toggle('is-typed', i < n));
+    const ref = chars[Math.max(n - 1, 0)];
+    const lb = lead.getBoundingClientRect();
+    const b = ref.getBoundingClientRect();
+    const x = n === 0 ? b.left - lb.left : b.right - lb.left;
+    gsap.set(caret, { x: x + 2, y: b.top - lb.top + b.height * 0.14 });
+  };
+  place(0);
+  ScrollTrigger.create({
+    trigger: lead,
+    start: 'top 80%',
+    end: 'bottom 45%',
+    onUpdate: (self) => place(Math.round(self.progress * chars.length)),
+    onRefresh: (self) => {
+      typed = -1;
+      place(Math.round(self.progress * chars.length));
+    },
+  });
+}
+
+function initUnfurl(section) {
+  const yes = $('[data-unfurl]', section);
+  const chars = splitChars(yes);
+  fitText([yes]);
+  if (reduced) return;
+  gsap.fromTo(
+    chars,
+    { scaleY: 0, yPercent: 20 },
+    {
+      scaleY: 1,
+      yPercent: 0,
+      ease: 'power3.out',
+      stagger: { each: 0.04, from: 'center' },
+      scrollTrigger: { trigger: yes, start: 'top 90%', end: 'top 45%', scrub: 0.8 },
+    },
+  );
+}
+
+function initStory(section) {
+  const story = $('[data-story]', section);
+  const rowsWrap = $('.story__rows', story);
+  const rows = $$('[data-story-row]', story);
+  const marker = $('[data-story-marker]', story);
+  rowsWrap.appendChild(marker);
 
   if (reduced) {
-    path.style.strokeDashoffset = '0';
-    stops.forEach((s) => s.classList.add('is-on'));
-  } else {
-    gsap.fromTo(
-      path,
-      { strokeDashoffset: () => len },
-      {
-        strokeDashoffset: 0,
-        ease: 'none',
-        scrollTrigger: { trigger: route, start: 'top 60%', end: 'bottom 60%', scrub: 0.6, invalidateOnRefresh: true },
-      },
-    );
-    stops.forEach((stop) => {
-      const card = $('.route__card', stop);
-      const fromX = stop.classList.contains('route__stop--left') ? -60 : 60;
-      gsap.set(card, { x: fromX, opacity: 0 });
-      ScrollTrigger.create({
-        trigger: $('[data-dot]', stop),
-        start: 'top 60%',
-        onEnter: () => {
-          stop.classList.add('is-on');
-          gsap.to(card, { x: 0, opacity: 1, duration: 1, ease: 'expo.out' });
-        },
-        onLeaveBack: () => {
-          stop.classList.remove('is-on');
-          gsap.to(card, { x: fromX, opacity: 0, duration: 0.5, ease: 'power2.in' });
-        },
-      });
-    });
+    rows.forEach((r) => r.classList.add('is-on'));
+    return;
   }
 
-  // 5. The formula: the ingredients start scattered and slide together into one line.
-  const eq = $('[data-equation]', section);
-  const chips = $$('[data-chip]', eq);
-  const ops = $$('[data-op]', eq);
-  const result = $('[data-result]', eq);
-  if (!reduced) {
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: eq, start: 'top 90%', end: 'top 30%', scrub: 1 },
-      defaults: { ease: 'none' },
+  rows.forEach((row) => {
+    const rule = $('.story__rule', row);
+    const rise = $$('[data-rise]', row);
+    gsap.set(rule, { scaleX: 0 });
+    gsap.set(rise, { yPercent: 110 });
+    ScrollTrigger.create({
+      trigger: row,
+      start: 'top 88%',
+      once: true,
+      onEnter: () => {
+        gsap.to(rule, { scaleX: 1, duration: 1.2, ease: 'expo.inOut' });
+        gsap.to(rise, { yPercent: 0, duration: 1, ease: 'expo.out', stagger: 0.06, delay: 0.2 });
+      },
     });
-    tl.from(chips, {
-      x: (i) => (i - 1.5) * window.innerWidth * 0.18,
-      y: (i) => (i % 2 ? 1 : -1) * 120,
-      rotation: (i) => (i % 2 ? 14 : -12),
-    }, 0)
-      .from(ops, { scale: 0, rotation: 180 }, 0.4)
-      .fromTo(result, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)' }, 0.5);
-  }
+  });
+
+  // The route: a square that travels down the index and switches each stop on.
+  ScrollTrigger.create({
+    trigger: rowsWrap,
+    start: 'top 55%',
+    end: 'bottom 55%',
+    scrub: true,
+    onUpdate: (self) => {
+      const h = rowsWrap.offsetHeight;
+      const y = self.progress * (h - 30) + 26;
+      gsap.to(marker, { y, duration: 0.4, ease: 'power3', overwrite: true });
+      rows.forEach((r) => r.classList.toggle('is-on', r.offsetTop + 18 <= y));
+    },
+  });
+  gsap.set(marker, { y: 26 });
+}
+
+function initFormula(section) {
+  const formula = $('[data-formula]', section);
+  const lines = $$('[data-formula-line]', formula);
+  fitText(lines);
+  if (reduced) return;
+  lines.forEach((line, i) => {
+    const last = i === lines.length - 1;
+    if (last) {
+      gsap.fromTo(
+        line,
+        { clipPath: 'inset(0% 100% 0% 0%)' },
+        { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none', scrollTrigger: { trigger: line, start: 'top 95%', end: 'top 55%', scrub: 0.6 } },
+      );
+      return;
+    }
+    gsap.from(line, {
+      xPercent: i % 2 ? 60 : -60,
+      ease: 'none',
+      scrollTrigger: { trigger: line, start: 'top bottom', end: 'top 55%', scrub: 0.6 },
+    });
+  });
 }

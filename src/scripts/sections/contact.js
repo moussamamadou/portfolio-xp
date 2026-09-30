@@ -1,59 +1,61 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { $, $$, splitChars, reduced } from '../utils.js';
+import { $, $$, splitChars, fitText, reduced } from '../utils.js';
 import { resetVisits } from './loader.js';
 
 /*
- * Contact, the payoff: after a whole page of blue used sparingly, blue finally
- * floods everything from the top. The headline pieces arrive from opposite sides,
- * "extraordinary" bounces in letter by letter and keeps breathing, and a marquee
+ * Contact, the payoff: after a whole page of blue used sparingly, twelve blue
+ * columns drop in one after the other (the grid itself floods). The headline
+ * lines rise out of their masks, "extraordinary" keeps breathing, and a marquee
  * runs whichever way you're scrolling.
  */
 export function initContact(visit, lenis) {
   const section = $('#contact');
-  const flood = $('[data-flood]', section);
+  const cols = $$('[data-flood-col]', section);
 
   if (reduced) {
-    gsap.set(flood, { clipPath: 'none' });
+    gsap.set(cols, { scaleY: 1 });
     section.classList.add('is-blue');
   } else {
-    gsap.to(flood, {
-      clipPath: 'circle(150% at 50% 12%)',
-      ease: 'none',
+    gsap.to(cols, {
+      scaleY: 1,
+      ease: 'power2.inOut',
+      stagger: { each: 0.06, from: 'start' },
       scrollTrigger: {
         trigger: section,
-        start: 'top 90%',
+        start: 'top 85%',
         end: 'top 5%',
-        scrub: true,
-        onUpdate: (self) => section.classList.toggle('is-blue', self.progress > 0.35),
+        scrub: 0.4,
+        onUpdate: (self) => section.classList.toggle('is-blue', self.progress > 0.55),
       },
     });
   }
 
-  // Headline: first two lines slide in from opposite sides, the last one bounces up.
-  const words = $$('[data-contact-word]', section);
+  // Headline: fitted lines that rise from their masks one after the other.
+  const lines = $$('[data-contact-line]', section);
+  const big = $('.bigcta__text', section);
   const extra = $('[data-extra]', section);
   const extraChars = splitChars(extra);
+  splitChars(big);
+  // Fit at the heaviest weight the wave reaches so it never outgrows the line.
+  extra.style.fontWeight = '880';
+  fitText([...lines, big]);
   if (!reduced) {
-    gsap.from(words[0], { xPercent: -110, ease: 'expo.out', duration: 1.4, scrollTrigger: { trigger: words[0], start: 'top 85%' } });
-    gsap.from(words[1], { xPercent: 110, ease: 'expo.out', duration: 1.4, delay: 0.1, scrollTrigger: { trigger: words[0], start: 'top 85%' } });
-    gsap.from(extraChars, {
-      yPercent: 120,
-      scaleY: 0.2,
-      opacity: 0,
-      duration: 1.4,
-      ease: 'elastic.out(1, 0.45)',
-      stagger: { each: 0.04, from: 'center' },
-      scrollTrigger: { trigger: extra, start: 'top 90%' },
+    gsap.set(lines, { yPercent: 105 });
+    ScrollTrigger.create({
+      trigger: lines[0],
+      start: 'top 85%',
+      once: true,
+      onEnter: () => gsap.to(lines, { yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1 }),
     });
 
     // "extraordinary" keeps breathing: a weight wave that never quite settles.
     let visible = false;
-    ScrollTrigger.create({ trigger: extra, start: 'top bottom', end: 'bottom top', onToggle: (s) => (visible = s.isActive) });
+    ScrollTrigger.create({ trigger: extra, start: 'top bottom', end: 'bottom top', onToggle: (st) => (visible = st.isActive) });
     gsap.ticker.add((time) => {
       if (!visible) return;
       extraChars.forEach((c, i) => {
-        c.style.fontWeight = (560 + 300 * Math.sin(time * 2.2 - i * 0.45)).toFixed(0);
+        c.style.fontWeight = (600 + 280 * Math.sin(time * 2 - i * 0.45)).toFixed(0);
       });
     });
   }
@@ -91,7 +93,7 @@ export function initContact(visit, lenis) {
       x += dir * (1.2 + boost) * (delta / 16.7);
       if (x <= -w) x += w;
       if (x > 0) x -= w;
-      track.style.transform = `translate3d(${x}px,0,0) skewX(${-dir * boost * 0.4}deg)`;
+      track.style.transform = `translate3d(${x}px,0,0) skewX(${-dir * boost * 0.3}deg)`;
     });
   }
 
@@ -106,7 +108,7 @@ export function initContact(visit, lenis) {
   const visitLine = $('[data-visit-line]', section);
   const n = visit.count;
   visitLine.textContent =
-    n === 1 ? 'Visit #1 · you got the full show' : n === 2 ? 'Visit #2 · the loader noticed' : n === 3 ? 'Visit #3 · the loader gave up' : `Visit #${n} · you come here often`;
+    n === 1 ? 'Visit #1 · you got the full show' : n === 2 ? 'Visit #2 · the loader noticed' : n === 3 ? 'Visit #3 · the loader stopped joking' : `Visit #${n} · you come here often`;
   $('[data-reset-visits]', section).addEventListener('click', () => {
     resetVisits();
     const url = new URL(location.href);

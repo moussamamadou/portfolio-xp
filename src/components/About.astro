@@ -1,4 +1,6 @@
 ---
+import SectionHead from './SectionHead.astro';
+
 const route = [
   { tag: 'Start', title: 'Software engineering', text: 'I started out writing code. Then I got curious.' },
   { tag: 'Detour', title: 'The banking world', text: 'A brief stint where I quickly realized I was missing creativity.' },
@@ -6,69 +8,74 @@ const route = [
   { tag: 'Return', title: 'Front-end developer', text: 'Back to programming, building interfaces and solving real-world problems for an application.' },
   { tag: 'Now', title: 'Creative development', text: 'The natural intersection of both worlds.' },
 ];
+const formula = ['Technology +', 'Design +', 'Motion +', 'Experimentation'];
 ---
 
 <section class="about section" id="about" aria-labelledby="about-title">
-  <div class="section__label mono"><span>(01)</span><span>Who am I?</span></div>
+  <SectionHead num="01" label="About" note="Who am I?" />
 
-  <h2 class="about__title" id="about-title">
-    <span class="about__title-line" data-scatter>The Developer</span>
-    <span class="about__title-line about__title-line--2" data-scatter>Designers Love</span>
+  <svg class="sr-filter" aria-hidden="true" width="0" height="0">
+    <filter id="warp" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.04" numOctaves="2" seed="4" result="noise" data-warp-noise />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" data-warp-map />
+    </filter>
+  </svg>
+
+  <h2 class="about__title" id="about-title" data-warp>
+    <span class="about__title-line">The Developer</span>
+    <span class="about__title-line about__title-line--2">Designers <em>Love</em></span>
   </h2>
 
-  <p class="about__lead" data-fill>
-    I'm a software engineer who doesn't hate design, making me the <em>unicorn</em> designers adore. Whatever crazy idea they throw my way, my answer is always the same:
-  </p>
-
-  <div class="about__stamp-wrap">
-    <p class="about__stamp" data-stamp>“Yes, it's possible.”</p>
-    <p class="about__stamp-note mono" data-stamp-note>*terms and conditions may apply to physics</p>
+  <div class="about__intro grid">
+    <p class="about__kicker t-small">(Intro)</p>
+    <p class="about__lead" data-type>
+      I'm a software engineer who doesn't hate design, making me the unicorn designers adore. Whatever crazy idea they throw my way, my answer is always the same:
+    </p>
   </div>
 
-  <div class="about__story">
-    <div class="about__story-head">
-      <p class="mono about__story-kicker">The story</p>
-      <h3 class="about__story-title">A rather unconventional route.</h3>
-    </div>
+  <div class="about__yes">
+    <p class="about__yes-text" data-fit data-unfurl>“Yes, it's possible.”</p>
+    <p class="about__yes-note t-small grid"><span>*terms and conditions may apply to physics</span></p>
+  </div>
 
-    <div class="route" data-route>
-      <svg class="route__svg" aria-hidden="true">
-        <path class="route__ghost" d="" />
-        <path class="route__path" d="" />
-      </svg>
-      <ol class="route__stops">
-        {
-          route.map((stop, i) => (
-            <li class={`route__stop route__stop--${i % 2 ? 'right' : 'left'}`} data-stop>
-              <span class="route__dot" data-dot aria-hidden="true" />
-              <div class="route__card">
-                <p class="mono route__tag">
-                  0{i + 1} — {stop.tag}
-                </p>
-                <p class="route__title">{stop.title}</p>
-                <p class="route__text">{stop.text}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
+  <div class="story" data-story>
+    <div class="story__head grid">
+      <p class="t-small story__kicker">(The story)</p>
+      <h3 class="story__title">A rather unconventional route.</h3>
     </div>
+    <span class="story__marker" aria-hidden="true" data-story-marker></span>
+    <ol class="story__rows">
+      {
+        route.map((stop, i) => (
+          <li class="story__row grid" data-story-row>
+            <span class="story__rule" aria-hidden="true" />
+            <span class="story__fill" aria-hidden="true" />
+            <span class="story__num t-small">
+              <span data-rise>0{i + 1}</span>
+            </span>
+            <span class="story__tag t-small">
+              <span data-rise>{stop.tag}</span>
+            </span>
+            <span class="story__name">
+              <span data-rise>{stop.title}</span>
+            </span>
+            <span class="story__text">
+              <span data-rise>{stop.text}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
 
-    <div class="equation" data-equation>
-      <p class="mono equation__kicker">The formula, roughly</p>
-      <div class="equation__row">
-        <span class="equation__chip" data-chip>technology</span>
-        <span class="equation__op" data-op>+</span>
-        <span class="equation__chip" data-chip>design</span>
-        <span class="equation__op" data-op>+</span>
-        <span class="equation__chip" data-chip>motion</span>
-        <span class="equation__op" data-op>+</span>
-        <span class="equation__chip" data-chip>experimentation</span>
-      </div>
-      <p class="equation__result" data-result>= creative development</p>
-      <p class="equation__outro">
-        Today, I build web experiences that aren't just functional, but visually engaging and interactive.
-      </p>
+  <div class="formula" data-formula>
+    <p class="formula__kicker t-small grid"><span>(The formula, roughly)</span></p>
+    {formula.map((line) => (
+      <p class="formula__line"><span data-fit data-formula-line>{line}</span></p>
+    ))}
+    <p class="formula__line formula__line--result"><span data-fit data-formula-line>= Creative Development</span></p>
+    <div class="formula__outro grid">
+      <p>Today, I build web experiences that aren't just functional, but visually engaging and interactive.</p>
     </div>
   </div>
 </section>
