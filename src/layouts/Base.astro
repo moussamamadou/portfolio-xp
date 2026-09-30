@@ -1,0 +1,39 @@
+---
+import '@fontsource-variable/rubik';
+import '@fontsource-variable/rubik/wght-italic.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Moussa Mamadou — Creative Developer',
+  description = 'Creative developer, independent. If you can dream it, I can code it (probably).',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f5f4ef" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <!-- Hide animated start states only when JS is running, so the page still reads without it. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      if (history.scrollRestoration) history.scrollRestoration = 'manual';
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

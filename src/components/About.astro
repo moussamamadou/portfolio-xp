@@ -1,0 +1,74 @@
+---
+const route = [
+  { tag: 'Start', title: 'Software engineering', text: 'I started out writing code. Then I got curious.' },
+  { tag: 'Detour', title: 'The banking world', text: 'A brief stint where I quickly realized I was missing creativity.' },
+  { tag: 'Escape', title: 'Graphic design, drawing, motion & 3D', text: 'I went looking for it, and found a lot of it.' },
+  { tag: 'Return', title: 'Front-end developer', text: 'Back to programming, building interfaces and solving real-world problems for an application.' },
+  { tag: 'Now', title: 'Creative development', text: 'The natural intersection of both worlds.' },
+];
+---
+
+<section class="about section" id="about" aria-labelledby="about-title">
+  <div class="section__label mono"><span>(01)</span><span>Who am I?</span></div>
+
+  <h2 class="about__title" id="about-title">
+    <span class="about__title-line" data-scatter>The Developer</span>
+    <span class="about__title-line about__title-line--2" data-scatter>Designers Love</span>
+  </h2>
+
+  <p class="about__lead" data-fill>
+    I'm a software engineer who doesn't hate design, making me the <em>unicorn</em> designers adore. Whatever crazy idea they throw my way, my answer is always the same:
+  </p>
+
+  <div class="about__stamp-wrap">
+    <p class="about__stamp" data-stamp>“Yes, it's possible.”</p>
+    <p class="about__stamp-note mono" data-stamp-note>*terms and conditions may apply to physics</p>
+  </div>
+
+  <div class="about__story">
+    <div class="about__story-head">
+      <p class="mono about__story-kicker">The story</p>
+      <h3 class="about__story-title">A rather unconventional route.</h3>
+    </div>
+
+    <div class="route" data-route>
+      <svg class="route__svg" aria-hidden="true">
+        <path class="route__ghost" d="" />
+        <path class="route__path" d="" />
+      </svg>
+      <ol class="route__stops">
+        {
+          route.map((stop, i) => (
+            <li class={`route__stop route__stop--${i % 2 ? 'right' : 'left'}`} data-stop>
+              <span class="route__dot" data-dot aria-hidden="true" />
+              <div class="route__card">
+                <p class="mono route__tag">
+                  0{i + 1} — {stop.tag}
+                </p>
+                <p class="route__title">{stop.title}</p>
+                <p class="route__text">{stop.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="equation" data-equation>
+      <p class="mono equation__kicker">The formula, roughly</p>
+      <div class="equation__row">
+        <span class="equation__chip" data-chip>technology</span>
+        <span class="equation__op" data-op>+</span>
+        <span class="equation__chip" data-chip>design</span>
+        <span class="equation__op" data-op>+</span>
+        <span class="equation__chip" data-chip>motion</span>
+        <span class="equation__op" data-op>+</span>
+        <span class="equation__chip" data-chip>experimentation</span>
+      </div>
+      <p class="equation__result" data-result>= creative development</p>
+      <p class="equation__outro">
+        Today, I build web experiences that aren't just functional, but visually engaging and interactive.
+      </p>
+    </div>
+  </div>
+</section>

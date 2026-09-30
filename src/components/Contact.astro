@@ -1,0 +1,66 @@
+---
+import { person } from '../data/content.js';
+---
+
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <div class="contact__flood" data-flood aria-hidden="true"></div>
+
+  <div class="contact__inner">
+    <div class="section__label mono"><span>(06)</span><span>Contact</span></div>
+
+    <h2 class="contact__title" id="contact-title">
+      <span class="contact__line"><span data-contact-word>Let's create</span></span>
+      <span class="contact__line"><span data-contact-word>something</span></span>
+      <span class="contact__line contact__line--xl"><span data-contact-word data-extra>extraordinary</span></span>
+    </h2>
+
+    <div class="contact__grid">
+      <p class="contact__lead">Ready to bring your wildest web designs to life? I'm just an email away.</p>
+
+      <div class="contact__channels">
+        <div class="channel">
+          <p class="mono channel__label">Email</p>
+          <a class="channel__value channel__email" href={`mailto:${person.email}`} data-cursor="Write">{person.email}</a>
+          <button class="channel__copy mono" type="button" data-copy={person.email}>
+            <span data-copy-label>Copy address</span>
+          </button>
+        </div>
+        <div class="channel">
+          <p class="mono channel__label">LinkedIn</p>
+          <a class="channel__value" href={person.linkedin} target="_blank" rel="noopener" data-cursor="Connect">{person.linkedinLabel} ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact__cta-wrap">
+      <a href={`mailto:${person.email}?subject=Let's build something`} class="btn btn--white btn--xxl" data-magnetic data-big-cta>
+        <span class="btn__label"><span class="roll" data-roll>Let's Build Something</span></span>
+        <span class="btn__arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="marquee" data-marquee aria-hidden="true">
+    <div class="marquee__track" data-marquee-track>
+      {Array.from({ length: 2 }).map(() => (
+        <div class="marquee__group">
+          {Array.from({ length: 4 }).map(() => (
+            <span class="marquee__item">
+              Let's build something <span class="marquee__star">✺</span>
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <footer class="footer mono">
+    <p>© {new Date().getFullYear()} Moussa Mamadou</p>
+    <p>Your local time <span data-clock>--:--</span> · mine: somewhere on Earth</p>
+    <p class="footer__visits">
+      <span data-visit-line>Visit #1</span>
+      <button type="button" class="footer__reset" data-reset-visits>Reset the drama</button>
+    </p>
+    <a href="#top" data-scroll-to class="footer__top">Back to top ↑</a>
+  </footer>
+</section>

@@ -1,0 +1,26 @@
+---
+// A small procedurally drawn laurel wreath: two branches of leaves climbing
+// from the bottom around each side, mirrored.
+const leaves = [];
+const steps = 8;
+for (let i = 0; i < steps; i++) {
+  const t = i / (steps - 1);
+  const theta = 104 + t * 128; // degrees, 90 = bottom, 180 = left
+  const r = 37 + (i % 2 ? 4 : -4);
+  const rad = (theta * Math.PI) / 180;
+  const x = 50 + r * Math.cos(rad);
+  const y = 50 + r * Math.sin(rad);
+  const rot = theta + (i % 2 ? 32 : -32);
+  const scale = 1 - t * 0.38;
+  leaves.push({ x, y, rot, scale });
+  leaves.push({ x: 100 - x, y, rot: -rot, scale });
+}
+---
+
+<svg class="laurel" viewBox="0 0 100 100" aria-hidden="true">
+  {
+    leaves.map((l) => (
+      <ellipse rx={(4.4 * l.scale).toFixed(2)} ry={(10 * l.scale).toFixed(2)} transform={`translate(${l.x.toFixed(2)} ${l.y.toFixed(2)}) rotate(${l.rot.toFixed(1)})`} />
+    ))
+  }
+</svg>

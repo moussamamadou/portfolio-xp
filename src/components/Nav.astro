@@ -1,0 +1,54 @@
+---
+import { nav } from '../data/content.js';
+---
+
+<header class="nav" id="nav">
+  <div class="nav__left">
+    <a href="#top" class="nav__logo" data-scroll-to aria-label="Back to top">
+      <span class="nav__logo-m">M</span><span class="nav__logo-m">M</span><span class="nav__logo-dot"></span>
+    </a>
+    <p class="nav__status mono"><span class="pulse" aria-hidden="true"></span>Available for work</p>
+  </div>
+
+  <nav class="nav__links" aria-label="Sections">
+    <span class="nav__pill" aria-hidden="true"></span>
+    {
+      nav.map((item) => (
+        <a href={`#${item.id}`} class="nav__link" data-scroll-to data-section={item.id}>
+          <span class="roll" data-roll>{item.label}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="nav__right">
+    <a href="#contact" class="btn btn--dark nav__cta" data-scroll-to data-magnetic>
+      <span class="btn__label"><span class="roll" data-roll>Let's Build Something</span></span>
+      <span class="btn__arrow" aria-hidden="true">→</span>
+    </a>
+    <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu">
+      <span class="nav__burger-label mono">Menu</span>
+      <span class="nav__burger-lines" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="nav__progress" aria-hidden="true"><span></span></div>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <ol class="menu__list">
+    {
+      nav.map((item, i) => (
+        <li>
+          <a href={`#${item.id}`} class="menu__link" data-scroll-to tabindex="-1">
+            <span class="mono menu__num">0{i + 1}</span>
+            <span class="menu__label">{item.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  <a href="#contact" class="btn btn--blue menu__cta" data-scroll-to tabindex="-1">
+    Let's Talk <span class="btn__arrow" aria-hidden="true">→</span>
+  </a>
+</div>
