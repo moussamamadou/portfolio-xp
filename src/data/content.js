@@ -22,15 +22,15 @@ export const nav = [
 
 const TBD = 'TBD';
 
-// Project images come from moussamamadou.com. They are hotlinked for now;
-// drop copies into public/projects/ and point IMG there to self-host them.
-const IMG = 'https://moussamamadou.com/_astro';
+// Project images are copies of the screenshots on moussamamadou.com, kept in
+// public/projects/ so covers survive that site redeploying.
+const IMG = '/projects';
 
 export const projects = [
   {
     num: '01',
     title: 'Julien Calot',
-    image: `${IMG}/juliencalot.vVWVKj1E_Z1RJrNS.webp`,
+    image: `${IMG}/juliencalot.webp`,
     kind: 'Artiste Peintre',
     description: null,
     role: 'Developer',
@@ -41,7 +41,7 @@ export const projects = [
   {
     num: '02',
     title: 'JOHNROOCKS',
-    image: `${IMG}/johnroocks.C9Rn_Mtj_1oeThl.webp`,
+    image: `${IMG}/johnroocks.webp`,
     kind: 'Photographer',
     description: null,
     role: 'Developer',
@@ -52,7 +52,7 @@ export const projects = [
   {
     num: '03',
     title: 'Le Marché des Argonautes',
-    image: `${IMG}/marcheargonautes.n6VpQ8eF_Z20hFx1.webp`,
+    image: `${IMG}/marcheargonautes.webp`,
     kind: 'Landing Page',
     description: null,
     role: 'Developer',
@@ -63,7 +63,7 @@ export const projects = [
   {
     num: '04',
     title: 'Florence Jeev',
-    image: `${IMG}/florence.CH7PD1be_ZMLLH3.webp`,
+    image: `${IMG}/florence.webp`,
     kind: 'Designer Portfolio',
     description:
       'Florence is a creative director who needed a new portfolio. The objective was to create subtle animations that matched her personality and visual style.',
@@ -75,7 +75,7 @@ export const projects = [
   {
     num: '05',
     title: 'History of Graphic Design',
-    image: `${IMG}/historyofgraphicdesign.Yy_VxeN4_ZCmtRI.webp`,
+    image: `${IMG}/historyofgraphicdesign.webp`,
     kind: 'Interactive Experience',
     description:
       'An interactive deep dive into the evolution of graphic design, exploring its history through an interactive experience.',
@@ -87,7 +87,7 @@ export const projects = [
   {
     num: '06',
     title: 'Chery France',
-    image: `${IMG}/cheryfrance.CDGiZpdn_1yViVf.webp`,
+    image: `${IMG}/cheryfrance.webp`,
     kind: 'Website',
     description: null,
     role: 'Developer',
@@ -98,7 +98,7 @@ export const projects = [
   {
     num: '07',
     title: 'SATEP',
-    image: `${IMG}/satep.BQ3cHvLD_ZPmYCa.webp`,
+    image: `${IMG}/satep.webp`,
     kind: 'Website',
     description: null,
     role: 'Developer',
