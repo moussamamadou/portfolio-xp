@@ -13,8 +13,7 @@ import SectionHead from './SectionHead.astro';
   </h2>
 
   <div class="labs__intro grid">
-    <p>A collection of experimental projects built to flex and show off my creative muscle.</p>
-    <p class="t-small labs__hint">(These are draggable. Go on, make a mess.)</p>
+    <p class="t-small labs__hint">(Drag them.)</p>
   </div>
 
   <div class="labs__table" data-labs-table>
@@ -41,7 +40,6 @@ import SectionHead from './SectionHead.astro';
               <a href={lab.codepen ?? person.codepen} target="_blank" rel="noopener">CodePen ↗</a>
               <a href={lab.webflow ?? person.webflow} target="_blank" rel="noopener">Webflow ↗</a>
             </div>
-            {!lab.codepen && <p class="sheet__note t-small">Links go to profiles until the direct ones are added.</p>}
             <span class="sheet__code" aria-hidden="true">{`0${i + 1}`}</span>
           </div>
         </article>
@@ -50,9 +48,6 @@ import SectionHead from './SectionHead.astro';
   </div>
 
   <div class="labs__foot grid">
-    <p class="labs__copy">
-      These experiments are more than just code, they're playgrounds for creativity. Feel free to explore, clone, and steal some inspiration.
-    </p>
     <div class="labs__profiles t-small">
       <a href={person.webflow} target="_blank" rel="noopener" class="tlink" data-shuffle><span class="shuf">Clonables on Webflow</span> ↗</a>
       <a href={person.codepen} target="_blank" rel="noopener" class="tlink" data-shuffle><span class="shuf">CodePen</span> ↗</a>

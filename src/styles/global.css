@@ -1,6 +1,6 @@
 /* ==========================================================================
    Moussa Mamadou, portfolio
-   Editorial grid, one family (Figtree), black on paper, blue used sparingly.
+   Editorial grid, one family (Figtree), black on paper, no colour.
    ========================================================================== */
 
 :root {
@@ -10,7 +10,6 @@
   --grey: #8e8e8a;
   --mute: #c9c9c5;
   --line: rgba(11, 11, 11, 0.16);
-  --blue: #1d3bff;
   --white: #fff;
 
   --m: clamp(14px, 1.4vw, 24px);
@@ -102,12 +101,12 @@ sup {
 }
 
 ::selection {
-  background: var(--blue);
+  background: var(--ink);
   color: var(--white);
 }
 
 :focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
@@ -135,12 +134,11 @@ sup {
   text-transform: uppercase;
 }
 
-/* Everything reads in capitals, like a poster; only addresses stay as typed. */
+/* Everything reads in capitals, like a poster. */
 body {
   text-transform: uppercase;
 }
 
-.channel__value,
 .nocaps {
   text-transform: none;
 }
@@ -207,8 +205,8 @@ body {
 }
 
 .gridlines span {
-  background: rgba(29, 59, 255, 0.07);
-  border-inline: 1px solid rgba(29, 59, 255, 0.25);
+  background: rgba(11, 11, 11, 0.04);
+  border-inline: 1px solid rgba(11, 11, 11, 0.18);
 }
 
 @media (max-width: 900px) {
@@ -523,7 +521,7 @@ html:not(.js) .loader {
   width: 7px;
   height: 7px;
   flex: none;
-  background: var(--blue);
+  background: var(--ink);
   animation: blink 1.4s steps(1) infinite;
 }
 
@@ -1466,7 +1464,7 @@ html:not(.js) .loader {
   display: block;
 }
 
-/* 01 paint: blue ground, broad strokes */
+/* 01 paint: grey ground, broad strokes */
 .cover--paint {
   background: #d9d9d5;
 }
@@ -1540,7 +1538,7 @@ html:not(.js) .loader {
   background: var(--ink);
 }
 
-/* 04 soft: a blurred blue sun */
+/* 04 soft: a blurred grey sun */
 .cover--soft {
   background: #e7e7e3;
 }
@@ -1861,7 +1859,7 @@ html:not(.js) .loader {
 }
 
 .labs__foot {
-  margin-top: 10vh;
+  margin-top: 4vh;
   align-items: end;
 }
 
@@ -2073,7 +2071,7 @@ html:not(.js) .playground__bodies {
 }
 
 .expertise__closing {
-  margin-top: 10vh;
+  margin-top: 4vh;
   align-items: end;
 }
 
@@ -2410,16 +2408,16 @@ html:not(.js) .playground__bodies {
 .channel__value {
   grid-column: 3 / 11;
   justify-self: start;
-  font-size: clamp(24px, 3.2vw, 60px);
+  font-size: clamp(18px, 2.6vw, 60px);
   font-weight: 650;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   line-height: 1;
   overflow-wrap: anywhere;
   transition: letter-spacing 0.6s var(--ease-out);
 }
 
 .channel__value:hover {
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
 }
 
 .channel__copy {
@@ -2777,6 +2775,7 @@ html:not(.js) .playground__bodies {
   .contact__lead p,
   .channel__value {
     grid-column: 1 / 5;
+    font-size: 4.9vw;
   }
   .channel {
     row-gap: 8px;

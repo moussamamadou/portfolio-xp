@@ -73,6 +73,6 @@ boot();
 
 console.log(
   '%cHey, you opened the console.\n%cThat is exactly the kind of curiosity I like. Say hi: moussa.mamadou@outlook.com\n(Psst: press G on the page to see the grid.)',
-  'font: 700 16px sans-serif; color: #1d3bff',
+  'font: 700 16px sans-serif; color: #0b0b0b',
   'font: 12px sans-serif; color: #0b0b0b',
 );

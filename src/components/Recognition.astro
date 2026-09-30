@@ -14,8 +14,7 @@ import SectionHead from './SectionHead.astro';
           <span class="rline"><span data-fake-line>till you</span></span>
           <span class="rline"><span data-fake-line class="recognition__win">win it.</span></span>
         </h2>
-        <p class="recognition__copy">I don't have an official Awwward yet. So let's have fun with it.</p>
-        <p class="recognition__legal t-small">*None of these awards exist. Any resemblance to real award platforms is affectionate parody.</p>
+        <p class="recognition__legal t-small">*None of these awards exist.</p>
         <div class="recognition__index t-small" aria-hidden="true">
           {awards.map((a, i) => (
             <p data-award-dot>
@@ -53,7 +52,6 @@ import SectionHead from './SectionHead.astro';
                     ))}
                   </tbody>
                 </table>
-                <p class="cert__jury t-small">{a.jury}</p>
                 <span class="cert__stamp t-small" aria-hidden="true">Not a real award</span>
               </div>
             </article>

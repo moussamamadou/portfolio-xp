@@ -17,7 +17,7 @@ Requires Node 22.12+.
 
 ## Art direction
 
-Editorial and monochrome, set entirely in uppercase: a 12-column grid (4 on mobile), one typeface (Figtree), small text sitting in grid cells, huge display type fitted edge to edge, hairline rules instead of cards and shadows. Black and white only; blue survives as a single tiny accent (the "Available for work" dot). Press `G` anywhere to see the grid.
+Editorial and monochrome, set entirely in uppercase: a 12-column grid (4 on mobile), one typeface (Figtree), small text sitting in grid cells, huge display type fitted edge to edge, hairline rules instead of cards and shadows. Black and white only, no colour. Copy is kept short. Press `G` anywhere to see the grid.
 
 ## The loading screen
 
