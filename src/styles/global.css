@@ -1414,8 +1414,9 @@ html:not(.js) .loader {
   left: 0;
   top: 0;
   z-index: 30;
-  width: clamp(220px, 22vw, 380px);
-  aspect-ratio: 4 / 5;
+  /* Same shape as the project screenshots (16:10), so nothing gets cropped away. */
+  width: clamp(300px, 30vw, 520px);
+  aspect-ratio: 16 / 10;
   pointer-events: none;
   display: none;
 }
@@ -2504,7 +2505,7 @@ html:not(.js) .playground__bodies {
   .row__cover {
     display: block;
     margin: 12px var(--m) 32px;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 10;
   }
   .row__cover .cover {
     height: 100%;
