@@ -28,13 +28,13 @@
 }
 
 html {
+  background: var(--bg);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
   color: var(--ink);
   font-family: var(--mono);
   font-size: 13px;
@@ -877,8 +877,14 @@ img {
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 5;
+  z-index: 0;
   pointer-events: none;
+}
+
+/* The page sits above the WebGL layer, so captions never get painted over. */
+#main {
+  position: relative;
+  z-index: 1;
 }
 
 .cursor {

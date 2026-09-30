@@ -147,7 +147,7 @@ export function initGL(canvas, lenis) {
 
   let vel = 0;
   gsap.ticker.add(() => {
-    const target = clamp((lenis?.velocity ?? 0) * 1.2, -40, 40);
+    const target = clamp((lenis?.velocity ?? 0) * 0.6, -16, 16);
     vel += (target - vel) * 0.12;
     gl.clear(gl.COLOR_BUFFER_BIT);
     for (const it of items) {
