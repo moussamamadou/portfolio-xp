@@ -5,8 +5,9 @@ import { initNameShader } from './hero-shader.js';
 
 /*
  * Hero: the name is set edge to edge, one fitted line per word. Its letters
- * rise in, then the name is handed to a WebGL shader: moving the cursor breaks
- * the letters into pixels along its trail. Scrolling away dissolves the name into bigger and bigger pixels.
+ * rise in, then the name is handed to a WebGL shader: a soft lens widens the
+ * letters under the cursor, and scrolling away
+ * stretches the name downward as it fades.
  */
 
 export function initHero() {

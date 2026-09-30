@@ -9,7 +9,6 @@ export const person = {
   linkedin: 'https://www.linkedin.com/in/moussa-mamadou',
   linkedinLabel: 'linkedin.com/in/moussa-mamadou',
   website: 'https://moussamamadou.com/',
-  webflow: 'https://webflow.com/@moussamamadou',
   codepen: 'https://codepen.io/moussamamadou',
 };
 
@@ -23,10 +22,15 @@ export const nav = [
 
 const TBD = 'TBD';
 
+// Project images come from moussamamadou.com. They are hotlinked for now;
+// drop copies into public/projects/ and point IMG there to self-host them.
+const IMG = 'https://moussamamadou.com/_astro';
+
 export const projects = [
   {
     num: '01',
     title: 'Julien Calot',
+    image: `${IMG}/juliencalot.vVWVKj1E_Z1RJrNS.webp`,
     kind: 'Artiste Peintre',
     description: null,
     role: 'Developer',
@@ -37,6 +41,7 @@ export const projects = [
   {
     num: '02',
     title: 'JOHNROOCKS',
+    image: `${IMG}/johnroocks.C9Rn_Mtj_1oeThl.webp`,
     kind: 'Photographer',
     description: null,
     role: 'Developer',
@@ -47,6 +52,7 @@ export const projects = [
   {
     num: '03',
     title: 'Le Marché des Argonautes',
+    image: `${IMG}/marcheargonautes.n6VpQ8eF_Z20hFx1.webp`,
     kind: 'Landing Page',
     description: null,
     role: 'Developer',
@@ -57,6 +63,7 @@ export const projects = [
   {
     num: '04',
     title: 'Florence Jeev',
+    image: `${IMG}/florence.CH7PD1be_ZMLLH3.webp`,
     kind: 'Designer Portfolio',
     description:
       'Florence is a creative director who needed a new portfolio. The objective was to create subtle animations that matched her personality and visual style.',
@@ -68,6 +75,7 @@ export const projects = [
   {
     num: '05',
     title: 'History of Graphic Design',
+    image: `${IMG}/historyofgraphicdesign.Yy_VxeN4_ZCmtRI.webp`,
     kind: 'Interactive Experience',
     description:
       'An interactive deep dive into the evolution of graphic design, exploring its history through an interactive experience.',
@@ -79,6 +87,7 @@ export const projects = [
   {
     num: '06',
     title: 'Chery France',
+    image: `${IMG}/cheryfrance.CDGiZpdn_1yViVf.webp`,
     kind: 'Website',
     description: null,
     role: 'Developer',
@@ -89,6 +98,7 @@ export const projects = [
   {
     num: '07',
     title: 'SATEP',
+    image: `${IMG}/satep.BQ3cHvLD_ZPmYCa.webp`,
     kind: 'Website',
     description: null,
     role: 'Developer',
@@ -104,21 +114,18 @@ export const labs = [
     title: 'Smooth Scroll Experience',
     tools: ['GSAP Core', 'GSAP ScrollTrigger'],
     codepen: null,
-    webflow: null,
   },
   {
     num: '02',
     title: 'Smooth Scroll Experience',
     tools: ['GSAP Core', 'GSAP ScrollTrigger', 'GSAP MotionPath'],
     codepen: null,
-    webflow: null,
   },
   {
     num: '03',
     title: 'Experimental Interaction',
     tools: ['GSAP Core', 'GSAP Observer', 'WebGL'],
     codepen: null,
-    webflow: null,
   },
 ];
 

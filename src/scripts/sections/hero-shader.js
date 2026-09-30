@@ -1,15 +1,13 @@
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gsap from 'gsap';
-import { Renderer, Program, Mesh, Triangle, Texture, Flowmap, Vec2 } from 'ogl';
+import { Renderer, Program, Mesh, Triangle, Texture } from 'ogl';
 import { $$, canHover } from '../utils.js';
 
 /*
- * The hero name as a shader. The fitted DOM letters are redrawn into a texture;
- * a flowmap (a fading trail of the pointer's movement) snaps the letters to a
- * pixel grid along the trail, and a pixel lens (rings of halving block size)
- * sits under the pointer. The
- * grid only takes power-of-two sizes so neighbouring blocks line up cleanly.
- * Scrolling away grows the pixels until the name dissolves.
+ * The hero name as a shader. The fitted DOM letters are redrawn into a texture
+ * and the shader runs a soft horizontal lens along them: letters under the
+ * cursor widen on a bell curve and ease back as it leaves. Scrolling away
+ * stretches the whole name downward as it fades.
  */
 
 const vertex = /* glsl */ `
@@ -25,35 +23,30 @@ const vertex = /* glsl */ `
 const fragment = /* glsl */ `
   precision highp float;
   uniform sampler2D tMap;
-  uniform sampler2D tFlow;
   uniform vec2 uRes;
-  uniform float uDpr;
+  uniform vec2 uMouse;
+  uniform float uRadius;
+  uniform float uAmount;
   uniform float uScroll;
   uniform vec3 uInk;
-  uniform vec2 uMouse;
-  uniform float uHover;
-  uniform float uRadius;
   varying vec2 vUv;
 
   void main() {
-    vec3 flow = texture2D(tFlow, vUv).rgb;
-    // A pixel lens around the pointer (rings of halving block size), plus the
-    // fading trail it leaves behind.
-    float d = distance(gl_FragCoord.xy, uMouse);
-    float lens = (1.0 - smoothstep(0.0, uRadius, d)) * uHover;
-    float s = max(lens, smoothstep(0.05, 0.6, flow.b) * 0.7);
+    vec2 p = vUv * uRes;
+    float dx = (p.x - uMouse.x) / uRadius;
+    float bump = exp(-dx * dx) * uAmount;
 
-    vec2 uv = vUv;
-    float px = (1.0 + s * 40.0 + uScroll * 90.0) * uDpr;
-    float level = exp2(floor(log2(max(px, 1.0))));
-    float a;
-    if (level > 1.5 * uDpr) {
-      vec2 cell = level / uRes;
-      a = step(0.5, texture2D(tMap, (floor(uv / cell) + 0.5) * cell).a);
-    } else {
-      a = texture2D(tMap, uv).a;
-    }
-    a *= 1.0 - smoothstep(0.3, 0.75, uScroll);
+    // Wider under the cursor: a one-dimensional lens that slides along the
+    // line, so the lines never run into each other.
+    float mx = uMouse.x / uRes.x;
+    float x = mx + (vUv.x - mx) / (1.0 + bump * 0.4);
+    float y = vUv.y;
+
+    // Leaving: the name stretches down from its top edge.
+    y = 1.0 - (1.0 - y) / (1.0 + uScroll * 2.4);
+
+    float a = texture2D(tMap, vec2(x, y)).a;
+    a *= 1.0 - smoothstep(0.35, 0.85, uScroll);
     gl_FragColor = vec4(uInk, a);
   }
 `;
@@ -77,14 +70,6 @@ export function initNameShader(stage, hero) {
   const paper = document.createElement('canvas');
   const ctx = paper.getContext('2d');
 
-  let flowmap;
-  try {
-    flowmap = new Flowmap(gl, { size: 64, falloff: 0.2, dissipation: 0.93 });
-  } catch {
-    canvas.remove();
-    return null;
-  }
-
   const texture = new Texture(gl, { generateMipmaps: false, minFilter: gl.LINEAR, magFilter: gl.LINEAR });
   const program = new Program(gl, {
     vertex,
@@ -92,14 +77,12 @@ export function initNameShader(stage, hero) {
     transparent: true,
     uniforms: {
       tMap: { value: texture },
-      tFlow: flowmap.uniform,
       uRes: { value: [1, 1] },
-      uDpr: { value: renderer.dpr },
+      uMouse: { value: [0, 0] },
+      uRadius: { value: 200 },
+      uAmount: { value: 0 },
       uScroll: { value: 0 },
       uInk: { value: [11 / 255, 11 / 255, 11 / 255] },
-      uMouse: { value: [-9999, -9999] },
-      uHover: { value: 0 },
-      uRadius: { value: 200 },
     },
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
@@ -132,43 +115,36 @@ export function initNameShader(stage, hero) {
     texture.image = paper;
     texture.needsUpdate = true;
     program.uniforms.uRes.value = [W * dpr, H * dpr];
-    program.uniforms.uRadius.value = Math.min(W * 0.16, H * 0.5) * dpr;
-    flowmap.aspect = W / H;
+    program.uniforms.uRadius.value = W * 0.09 * dpr;
   };
 
-  // Pointer: position in 0..1, velocity in px per ms, as the flowmap expects.
-  const last = new Vec2(-1, -1);
-  const velocity = new Vec2();
-  let lastTime = 0;
-  let moved = false;
+  // Pointer, eased: position in stage pixels (y up).
+  const target = { x: 0, y: 0 };
+  const pos = { x: 0, y: 0 };
+  let inside = false;
   const move = (clientX, clientY) => {
     const box = stage.getBoundingClientRect();
-    const x = (clientX - box.left) / box.width;
-    const y = 1 - (clientY - box.top) / box.height;
-    flowmap.mouse.set(x, y);
-    program.uniforms.uMouse.value = [x * box.width * renderer.dpr, y * box.height * renderer.dpr];
-    const now = performance.now();
-    if (last.x < 0) {
-      last.set(clientX, clientY);
-      lastTime = now;
-    }
-    const dt = Math.max(14, now - lastTime);
-    velocity.set((clientX - last.x) / dt, (clientY - last.y) / dt);
-    last.set(clientX, clientY);
-    lastTime = now;
-    moved = true;
+    target.x = clientX - box.left;
+    target.y = box.height - (clientY - box.top);
   };
-  let hover = 0;
-  let inside = false;
   hero.addEventListener('pointermove', (e) => move(e.clientX, e.clientY));
-  // Touch: the lens only shows while a finger is on the name.
-  stage.addEventListener('pointerenter', () => (inside = true));
+  stage.addEventListener('pointerenter', (e) => {
+    inside = true;
+    move(e.clientX, e.clientY);
+    Object.assign(pos, target);
+  });
   stage.addEventListener('pointerleave', () => (inside = false));
+  // Touch: the name stretches only while a finger is on it.
   if (!canHover) {
-    stage.addEventListener('pointerdown', (e) => ((inside = true), move(e.clientX, e.clientY)));
+    stage.addEventListener('pointerdown', (e) => {
+      inside = true;
+      move(e.clientX, e.clientY);
+      Object.assign(pos, target);
+    });
     window.addEventListener('pointerup', () => (inside = false));
     window.addEventListener('pointercancel', () => (inside = false));
   }
+  let amount = 0;
 
   let started = false;
   let visible = true;
@@ -183,12 +159,12 @@ export function initNameShader(stage, hero) {
 
   gsap.ticker.add(() => {
     if (!started || !visible) return;
-    if (!moved) velocity.set(0, 0);
-    moved = false;
-    hover += ((inside ? 1 : 0) - hover) * 0.08;
-    program.uniforms.uHover.value = hover;
-    flowmap.velocity.lerp(velocity, velocity.len() ? 0.5 : 0.1);
-    flowmap.update();
+    const u = program.uniforms;
+    pos.x += (target.x - pos.x) * 0.12;
+    pos.y += (target.y - pos.y) * 0.12;
+    amount += ((inside ? 1 : 0) - amount) * 0.07;
+    u.uMouse.value = [pos.x * renderer.dpr, pos.y * renderer.dpr];
+    u.uAmount.value = amount;
     renderer.render({ scene: mesh });
   });
 

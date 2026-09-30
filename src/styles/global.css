@@ -1184,7 +1184,22 @@ html:not(.js) .loader {
   opacity: 1;
 }
 
-.work__reel .cover__top {
+.work__reel .cover__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.cover.has-img .cover__top,
+.cover.has-img .cover__num,
+.cover.has-img .cover__motif {
+  visibility: hidden;
+}
+
+.cover__top {
   opacity: 0;
   transition: opacity 0.4s;
 }
