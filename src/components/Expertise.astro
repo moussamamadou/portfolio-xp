@@ -1,0 +1,54 @@
+---
+import { skillGroups, person } from '../data/content.js';
+import SectionHead from './SectionHead.astro';
+---
+
+<section class="expertise section" id="expertise" aria-labelledby="expertise-title">
+  <SectionHead num="04" label="Expertise" note="My developer toolkit" />
+
+  <h2 class="expertise__title" id="expertise-title">Things I Actually Know How To Use</h2>
+
+  <div class="expertise__grid grid">
+    <div class="playground" data-playground data-cursor="Throw">
+      <div class="playground__bar t-small">
+        <span>Playground — throw them</span>
+        <button class="playground__shake" type="button" data-shake>Shake ↯</button>
+      </div>
+      <div class="playground__bodies" aria-hidden="true">
+        {
+          skillGroups.flatMap((g) =>
+            g.items.map((s) => (
+              <div class={`tag tag--${g.id}`} data-tag data-group={g.id} data-name={s.name} data-note={s.note}>
+                {s.name}
+              </div>
+            )),
+          )
+        }
+      </div>
+    </div>
+
+    <div class="legend">
+      {
+        skillGroups.map((g, gi) => (
+          <div class="legend__group" data-legend-group={g.id}>
+            <h3 class="legend__title t-small">
+              <span class={`legend__swatch legend__swatch--${g.id}`} aria-hidden="true" />
+              <span>({String.fromCharCode(65 + gi)})</span> {g.title}
+            </h3>
+            <ul class="legend__list">
+              {g.items.map((s) => (
+                <li class="legend__item" data-legend-item={s.name}>
+                  <span class="legend__name">{s.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="expertise__closing grid">
+    <a href={person.website} target="_blank" rel="noopener" class="tlink t-small" data-shuffle><span class="shuf">moussamamadou.com</span> ↗</a>
+  </div>
+</section>

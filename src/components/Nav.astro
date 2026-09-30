@@ -1,0 +1,50 @@
+---
+import { nav, person } from '../data/content.js';
+---
+
+<header class="nav grid t-small" id="nav">
+  <a href="#top" class="nav__name" data-scroll-to aria-label="Moussa Mamadou, back to top">
+    <span data-collapse>M<span data-fold>oussa</span></span>{' '}<span data-collapse>M<span data-fold>amadou</span></span><sup>©</sup>
+  </a>
+
+  <p class="nav__role">Creative Developer<br />Independent</p>
+
+  <nav class="nav__links" aria-label="Sections">
+    {
+      nav.map((item, i) => (
+        <a href={`#${item.id}`} class="nav__link" data-scroll-to data-section={item.id} data-shuffle>
+          <span class="shuf">{item.label}</span><sup>0{i + 1}</sup>
+        </a>
+      ))
+    }
+  </nav>
+
+  <p class="nav__status"><span class="nav__blink" aria-hidden="true"></span>Available for work</p>
+
+  <a href={`mailto:${person.email}`} class="nav__cta" data-shuffle data-nav-cta>
+    <span class="shuf">Let's Build Something</span> <span class="nav__arrow" aria-hidden="true">→</span>
+  </a>
+
+  <button class="nav__burger" type="button" aria-expanded="false" aria-controls="menu">
+    <span data-burger-label>Menu</span>
+  </button>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <ol class="menu__list">
+    {
+      nav.map((item, i) => (
+        <li class="menu__item">
+          <a href={`#${item.id}`} class="menu__link" data-scroll-to tabindex="-1">
+            <span class="menu__num t-small">(0{i + 1})</span>
+            <span class="menu__label">{item.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="menu__foot grid t-small">
+    <p class="menu__status"><span class="nav__blink" aria-hidden="true"></span>Available for work</p>
+    <a href={`mailto:${person.email}`} class="menu__cta" tabindex="-1">Let's Build Something →</a>
+  </div>
+</div>

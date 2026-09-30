@@ -1,0 +1,67 @@
+---
+import SectionHead from './SectionHead.astro';
+
+const route = [
+  { tag: 'Start', title: 'Software engineering', text: 'I started out writing code. Then I got curious.' },
+  { tag: 'Detour', title: 'The banking world', text: 'A brief stint where I quickly realized I was missing creativity.' },
+  { tag: 'Escape', title: 'Graphic design, drawing, motion & 3D', text: 'I went looking for it, and found a lot of it.' },
+  { tag: 'Return', title: 'Front-end developer', text: 'Back to programming, building interfaces and solving real-world problems for an application.' },
+  { tag: 'Now', title: 'Creative development', text: 'The natural intersection of both worlds.' },
+];
+const formula = ['Technology +', 'Design +', 'Motion +', 'Experimentation'];
+---
+
+<section class="about section" id="about" aria-labelledby="about-title">
+  <SectionHead num="01" label="About" note="Who am I?" />
+
+  <h2 class="about__title" id="about-title">
+    <span class="about__title-line"><span data-fit data-reveal-line>The Developer</span></span>
+    <span class="about__title-line"><span data-fit data-reveal-line>Designers <em>Love</em></span></span>
+  </h2>
+
+  <div class="about__intro grid">
+    <p class="about__kicker t-small">(Intro)</p>
+    <p class="about__lead" data-fill>
+      A software engineer who doesn't hate design. Whatever idea you throw my way, the answer is:
+    </p>
+  </div>
+
+  <div class="about__yes">
+    <p class="about__yes-line"><span class="about__yes-text" data-fit data-reveal-line>“Yes, it's possible.”</span></p>
+    <p class="about__yes-note t-small grid"><span>*terms and conditions may apply to physics</span></p>
+  </div>
+
+  <div class="story" data-story>
+    <div class="story__head grid">
+      <p class="t-small story__kicker">(The story)</p>
+      <h3 class="story__title">A rather unconventional route.</h3>
+    </div>
+    <ol class="story__rows">
+      {
+        route.map((stop, i) => (
+          <li class="story__row grid" data-story-row>
+            <span class="story__rule" aria-hidden="true" />
+            <span class="story__fill" aria-hidden="true" />
+            <span class="story__num t-small">
+              <span data-rise>0{i + 1}</span>
+            </span>
+            <span class="story__tag t-small">
+              <span data-rise>{stop.tag}</span>
+            </span>
+            <span class="story__name">
+              <span data-rise>{stop.title}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div class="formula" data-formula>
+    <p class="formula__kicker t-small grid"><span>(The formula, roughly)</span></p>
+    {formula.map((line) => (
+      <p class="formula__line"><span data-fit data-formula-line>{line}</span></p>
+    ))}
+    <p class="formula__line formula__line--result"><span data-fit data-formula-line>= Creative Development</span></p>
+  </div>
+</section>

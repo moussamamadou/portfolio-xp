@@ -1,0 +1,15 @@
+---
+// Project cover: the real screenshot when there is one, over a typographic
+// fallback that shows if the image is missing or fails to load.
+interface Props {
+  project: { num: string; title: string; kind: string; art: string; image?: string };
+}
+const { project: p } = Astro.props;
+---
+
+<div class={`cover cover--${p.art}${p.image ? ' has-img' : ''}`}>
+  <div class="cover__motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="cover__top t-small"><span>{p.title}</span><span>{p.num}</span></p>
+  <p class="cover__num">{p.num}</p>
+  {p.image && <img class="cover__img" src={p.image} alt="" loading="lazy" decoding="async" onerror="this.closest('.cover').classList.remove('has-img');this.remove()" />}
+</div>
