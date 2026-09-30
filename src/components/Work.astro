@@ -22,6 +22,12 @@ import { projects } from '../data/content.js';
             <span class="project__num" aria-hidden="true" data-project-num>
               {p.num}
             </span>
+            {p.link && p.link !== 'soon' ? (
+              <a class="project__visual" href={p.link} target="_blank" rel="noopener" data-cursor="Visit" data-project-visual aria-label={`Visit ${p.title}`}>
+                <div class={`art art--${p.art}`} aria-hidden="true"><i /><i /><i /><i /><i /><i /></div>
+                <span class="project__visual-note mono">Placeholder visual</span>
+              </a>
+            ) : (
             <div class="project__visual" data-cursor="Soon" data-project-visual>
               <div class={`art art--${p.art}`} aria-hidden="true">
                 <i />
@@ -33,6 +39,7 @@ import { projects } from '../data/content.js';
               </div>
               <span class="project__visual-note mono">Placeholder visual</span>
             </div>
+            )}
             <div class="project__body">
               <p class="project__kind mono">{p.num} — {p.kind}</p>
               <h3 class="project__title" data-project-title>
@@ -51,7 +58,9 @@ import { projects } from '../data/content.js';
                 <div>
                   <dt class="mono">Link</dt>
                   <dd>
-                    {p.link ? (
+                    {p.link === 'soon' ? (
+                      <span class="soon mono">Launching soon</span>
+                    ) : p.link ? (
                       <a href={p.link} target="_blank" rel="noopener" class="link">
                         Visit site ↗
                       </a>

@@ -8,7 +8,7 @@ export const person = {
   email: 'moussa.mamadou@outlook.com',
   linkedin: 'https://www.linkedin.com/in/moussa-mamadou',
   linkedinLabel: 'linkedin.com/in/moussa-mamadou',
-  website: 'https://www.moussamamadou.me/',
+  website: 'https://moussamamadou.com/',
   webflow: 'https://webflow.com/@moussamamadou',
   codepen: 'https://codepen.io/moussamamadou',
 };
@@ -27,12 +27,12 @@ const TBD = 'TBD';
 export const projects = [
   {
     num: '01',
-    title: 'Julien Callot',
+    title: 'Julien Calot',
     kind: 'Artiste Peintre',
     description: null,
     role: TBD,
-    stack: [TBD],
-    link: null,
+    stack: ['Webflow', 'GSAP', 'PixiJS'],
+    link: 'https://www.juliencalot.com/',
     art: 'paint',
   },
   {
@@ -41,8 +41,8 @@ export const projects = [
     kind: 'Photographer',
     description: null,
     role: TBD,
-    stack: [TBD],
-    link: null,
+    stack: ['Nuxt', 'GSAP', 'Three.js', 'Prismic'],
+    link: 'soon',
     art: 'lens',
   },
   {
@@ -51,8 +51,8 @@ export const projects = [
     kind: 'Landing Page',
     description: null,
     role: TBD,
-    stack: [TBD],
-    link: null,
+    stack: ['Webflow', 'GSAP'],
+    link: 'https://www.marche-argonautes.fr/',
     art: 'market',
   },
   {
@@ -63,7 +63,7 @@ export const projects = [
       'Florence is a creative director who needed a new portfolio. The objective was to create subtle animations that matched her personality and visual style.',
     role: 'Developer',
     stack: ['GSAP', 'Lenis', 'SplitType', 'Webflow'],
-    link: null,
+    link: 'soon',
     art: 'soft',
   },
   {
@@ -74,7 +74,7 @@ export const projects = [
       'An interactive deep dive into the evolution of graphic design, exploring its history through an interactive experience.',
     role: 'Developer',
     stack: ['Vanilla JavaScript', 'WebGL', 'Astro.js'],
-    link: null,
+    link: 'https://www.historyofgraphicdesign.com/',
     art: 'swiss',
   },
 ];

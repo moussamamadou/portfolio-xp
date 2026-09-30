@@ -49,8 +49,9 @@ The footer also has a **Reset the drama** button. `Esc` skips any loader.
 All copy (projects, labs, skills, awards, links) lives in [`src/data/content.js`](src/data/content.js).
 Fields still waiting on real info are marked `TBD` and show as dashed placeholders on the page:
 
-- Role / Stack / Link for Julien Callot, JOHNROOCKS and Le Marché des Argonautes
-- Links for Florence Jeev and History of Graphic Design
+- Role for Julien Calot, JOHNROOCKS and Le Marché des Argonautes
 - Direct CodePen / Webflow links for each Labs clonable (they point to the profiles for now)
+
+Stacks and links for Julien Calot, JOHNROOCKS and Le Marché des Argonautes come from moussamamadou.com. JOHNROOCKS and Florence Jeev show "Launching soon" (`link: 'soon'`).
 
 Project visuals are CSS placeholder compositions (`.art--*` in `src/styles/global.css`); swap them for real images inside `.project__visual`.

@@ -120,6 +120,14 @@ em {
   border-radius: 999px;
   color: var(--muted);
 }
+.soon {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 11px;
+}
 dd.tbd {
   width: max-content;
 }
@@ -1279,6 +1287,7 @@ button:hover .roll .char,
   opacity: 1;
 }
 .project__visual {
+  display: block;
   position: relative;
   z-index: 1;
   aspect-ratio: 4 / 3;
