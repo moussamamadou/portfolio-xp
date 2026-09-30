@@ -2,26 +2,24 @@
 import { skillGroups } from '../data/content.js';
 ---
 
-<section class="toolkit section" id="toolkit" aria-labelledby="toolkit-title">
-  <p class="kicker mono"><span>(04)</span><span>Toolkit</span><span>Things I actually know how to use</span></p>
+<section class="toolkit" id="toolkit" aria-labelledby="toolkit-title">
+  <header class="toolkit__head">
+    <p class="kicker mono"><span>(04)</span><span>Toolkit</span></p>
+    <h2 class="toolkit__title display" id="toolkit-title" data-toolkit-title>Toolkit</h2>
+    <ul class="toolkit__legend mono">
+      {skillGroups.map((g) => <li class={`legend legend--${g.id}`}>{g.title}</li>)}
+    </ul>
+  </header>
 
-  <h2 class="visually-hidden" id="toolkit-title">Toolkit</h2>
-
-  <div class="toolkit__groups">
-    {
-      skillGroups.map((g, gi) => (
-        <div class="group" data-group>
-          <h3 class="group__title mono">({String.fromCharCode(65 + gi)}) {g.title}</h3>
-          <ul class="group__list">
-            {g.items.map((s) => (
-              <li class="tool" data-tool>
-                <span class="tool__name"><span data-tool-name>{s.name}</span></span>
-                <span class="tool__note mono" data-tool-note>{s.note}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))
-    }
+  <div class="pit" data-pit>
+    <p class="pit__hint mono" aria-hidden="true">Grab one. Throw it.</p>
+    {skillGroups.map((g) =>
+      g.items.map((t) => (
+        <button type="button" class={`pill pill--${g.id} display`} data-pill data-note={t.note}>
+          {t.name}
+        </button>
+      )),
+    )}
+    <p class="pit__note display" data-pit-note aria-live="polite"></p>
   </div>
 </section>

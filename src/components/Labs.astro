@@ -1,31 +1,47 @@
 ---
 import { labs, person } from '../data/content.js';
+const demos = ['scroll', 'path', 'grid'];
 ---
 
-<section class="labs section" id="labs" aria-labelledby="labs-title">
-  <p class="kicker mono"><span>(03)</span><span>Labs</span><span>Experiments on CodePen</span></p>
+<section class="labs" id="labs" aria-labelledby="labs-title">
+  <div class="labs__pin">
+    <header class="labs__head">
+      <p class="kicker mono"><span>(03)</span><span>Labs</span></p>
+      <h2 class="labs__title display" id="labs-title" data-labs-title>Labs</h2>
+      <p class="labs__note mono">Small experiments, all on CodePen</p>
+    </header>
 
-  <h2 class="labs__title" id="labs-title" data-lines>Where creativity runs wild</h2>
-
-  <ol class="labs__list">
-    {
-      labs.map((lab) => (
-        <li class="lab" data-lab>
-          <a class="lab__link" href={lab.codepen ?? person.codepen} target="_blank" rel="noopener" data-cursor="CodePen ↗">
-            <span class="lab__rule" aria-hidden="true" />
-            <span class="lab__num mono">(L{lab.num})</span>
-            <span class="lab__title">{lab.title}</span>
-            <span class="lab__tools mono">{lab.tools.join(' · ')}</span>
-            <span class="lab__go mono">CodePen ↗</span>
-            <span class="lab__fill" aria-hidden="true">
-              <span class="lab__num mono">(L{lab.num})</span>
-              <span class="lab__title">{lab.title}</span>
-              <span class="lab__tools mono">{lab.tools.join(' · ')}</span>
-              <span class="lab__go mono">CodePen ↗</span>
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ol>
+    <div class="deck" data-deck style={`--n:${labs.length}`}>
+      {labs.map((l, i) => (
+        <article class="lab" style={`--i:${i}`} data-lab>
+          <p class="lab__spine mono" aria-hidden="true"><span>L{l.num}</span><span>{l.title}</span></p>
+          <div class="lab__face">
+            <div class="lab__info">
+              <p class="lab__num display">{l.num}</p>
+              <h3 class="lab__title display">{l.title}</h3>
+              <ul class="lab__tools mono">{l.tools.map((t) => <li>{t}</li>)}</ul>
+              <a class="lab__link mono" href={l.codepen ?? person.codepen} target="_blank" rel="noopener">
+                <span class="roll" data-roll>Open on CodePen</span> ↗
+              </a>
+            </div>
+            <div class="lab__demo" data-demo={demos[i]} aria-hidden="true">
+              {demos[i] === 'scroll' && (
+                <div class="demo-scroll">
+                  {Array.from({ length: 6 }).map(() => <span class="display">Smooth</span>)}
+                </div>
+              )}
+              {demos[i] === 'path' && (
+                <svg class="demo-path" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
+                  <path class="demo-path__ghost" d="M20 250 C 90 250, 60 60, 140 60 S 210 240, 260 200 S 300 40, 380 50" />
+                  <path class="demo-path__line" data-path d="M20 250 C 90 250, 60 60, 140 60 S 210 240, 260 200 S 300 40, 380 50" />
+                  <circle class="demo-path__dot" data-path-dot r="9" cx="20" cy="250" />
+                </svg>
+              )}
+              {demos[i] === 'grid' && <canvas class="demo-grid" data-grid />}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
 </section>

@@ -2,31 +2,29 @@
 import { route, formula } from '../data/content.js';
 ---
 
-<section class="about section" id="about" aria-labelledby="about-title">
-  <p class="kicker mono"><span>(01)</span><span>About</span><span>Who am I?</span></p>
+<section class="about" id="about" aria-labelledby="about-title">
+  <div class="about__pin">
+    <p class="kicker mono"><span>(01)</span><span>About</span></p>
 
-  <h2 class="about__statement" id="about-title" data-lines>
-    A software engineer who doesn't hate design. Whatever idea you throw my way, the answer is: yes, it's possible<sup>*</sup>
-  </h2>
+    <h2 class="about__text display" id="about-title" data-words>
+      A software engineer who doesn't hate design. Whatever you throw my way, the answer is yes, it's possible*
+    </h2>
 
-  <div class="about__facts">
-    <p class="about__terms mono" data-rise>* Terms and conditions may apply to physics.</p>
-
-    <div class="fact" data-rise>
-      <h3 class="fact__label mono">(Route)</h3>
-      <ol class="fact__list mono">
-        {route.map((r, i) => (
-          <li><span class="fact__n">0{i + 1}</span><span>{r.title}</span></li>
+    <div class="route" data-route>
+      <div class="route__track" aria-hidden="true"><span class="route__fill"></span></div>
+      <ol class="route__stops mono">
+        {route.map((r) => (
+          <li class="route__stop" data-stop>
+            <span class="route__tag">{r.tag}</span>
+            <span class="route__title">{r.title}</span>
+          </li>
         ))}
       </ol>
     </div>
 
-    <div class="fact" data-rise>
-      <h3 class="fact__label mono">(Formula)</h3>
-      <p class="fact__formula mono">
-        {formula.map((f, i) => <span>{f}{i < formula.length - 1 ? ' +' : ''}</span>)}
-        <span class="fact__result">= Creative development</span>
-      </p>
-    </div>
+    <p class="about__foot mono">
+      <span data-formula>{formula.join(' + ')} = Creative development</span>
+      <span class="about__terms">* Terms and conditions may apply to physics</span>
+    </p>
   </div>
 </section>
