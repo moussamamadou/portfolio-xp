@@ -72,6 +72,12 @@ export function refit(els = fitted) {
     const parent = el.parentElement;
     const cs = getComputedStyle(parent);
     const avail = parent.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    // Tracking inherits as a fixed px value; pin it in em so it scales with the fit.
+    if (!el.dataset.ls) {
+      const own = getComputedStyle(el);
+      el.dataset.ls = String(parseFloat(own.letterSpacing) / parseFloat(own.fontSize) || 0);
+      el.style.letterSpacing = `${el.dataset.ls}em`;
+    }
     el.style.fontSize = '100px';
     // Negative tracking leaves the last glyph hanging past the box; count it in.
     const ls = parseFloat(getComputedStyle(el).letterSpacing) || 0;

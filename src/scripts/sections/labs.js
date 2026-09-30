@@ -6,7 +6,7 @@ import { $, $$, lerp, clamp, splitChars, fitText, canHover, reduced } from '../u
 
 /*
  * Labs: the one place with WebGL. A field of tiny square dots that swell and turn
- * blue around the cursor, a title that scans in, and spec sheets that print out
+ * darker around the cursor, a title that scans in, and spec sheets that print out
  * and can be thrown around the table.
  */
 
@@ -84,7 +84,7 @@ function initField(section) {
       uHover: { value: 0 },
       uDpr: { value: renderer.dpr },
       uInk: { value: hex(styles.getPropertyValue('--ink').trim() || '#0e0e0e') },
-      uBlue: { value: hex(styles.getPropertyValue('--blue').trim() || '#2340ff') },
+      uBlue: { value: hex(styles.getPropertyValue('--ink').trim() || '#0b0b0b') },
     },
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
@@ -142,20 +142,19 @@ export function initLabs() {
   const section = $('#labs');
   initField(section);
 
-  // "Labs" is set edge to edge and comes in like a scan: alternate letters
-  // wipe open from the top and from the bottom.
+  // "Labs" is set edge to edge and its letters wipe up one after the other.
   const big = $('[data-labs-big]', section);
   const chars = splitChars(big);
   fitText([big]);
   if (!reduced) {
     gsap.fromTo(
       chars,
-      { clipPath: (i) => (i % 2 ? 'inset(100% -30% -10% -30%)' : 'inset(-10% -30% 100% -30%)') },
+      { clipPath: 'inset(100% -30% -10% -30%)' },
       {
         clipPath: 'inset(-10% -30% -10% -30%)',
         ease: 'none',
         stagger: 0.12,
-        scrollTrigger: { trigger: big, start: 'top 95%', end: 'top 35%', scrub: 0.6 },
+        scrollTrigger: { trigger: big, start: 'top 95%', end: 'top 45%', scrub: 0.6 },
       },
     );
   }

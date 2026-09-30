@@ -20,7 +20,7 @@ export function initSectionHeads() {
 }
 
 /*
- * The cursor: an 8px blue square. Over anything with data-cursor it stretches
+ * The cursor: an 8px black square. Over anything with data-cursor it stretches
  * into a label, sized to the text so it never looks like a pill.
  */
 export function initCursor() {
@@ -79,9 +79,9 @@ export function initGridToggle() {
 }
 
 /*
- * Nav: a small editorial bar. A blue square slides to the section you're in and
+ * Nav: a small editorial bar. A small square slides to the section you're in and
  * pushes its label over; the name folds down to "M.M." once you leave the hero;
- * everything turns white over the blue contact section.
+ * everything turns white over the black contact section.
  */
 export function initNav(lenis) {
   const nav = $('#nav');

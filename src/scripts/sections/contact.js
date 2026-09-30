@@ -4,10 +4,9 @@ import { $, $$, splitChars, fitText, reduced } from '../utils.js';
 import { resetVisits } from './loader.js';
 
 /*
- * Contact, the payoff: after a whole page of blue used sparingly, twelve blue
+ * Contact, the payoff: after a whole page on paper, twelve black
  * columns drop in one after the other (the grid itself floods). The headline
- * lines rise out of their masks, "extraordinary" keeps breathing, and a marquee
- * runs whichever way you're scrolling.
+ * lines rise out of their masks, and a marquee runs whichever way you're scrolling.
  */
 export function initContact(visit, lenis) {
   const section = $('#contact');
@@ -34,11 +33,7 @@ export function initContact(visit, lenis) {
   // Headline: fitted lines that rise from their masks one after the other.
   const lines = $$('[data-contact-line]', section);
   const big = $('.bigcta__text', section);
-  const extra = $('[data-extra]', section);
-  const extraChars = splitChars(extra);
   splitChars(big);
-  // Fit at the heaviest weight the wave reaches so it never outgrows the line.
-  extra.style.fontWeight = '880';
   fitText([...lines, big]);
   if (!reduced) {
     gsap.set(lines, { yPercent: 105 });
@@ -47,16 +42,6 @@ export function initContact(visit, lenis) {
       start: 'top 85%',
       once: true,
       onEnter: () => gsap.to(lines, { yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1 }),
-    });
-
-    // "extraordinary" keeps breathing: a weight wave that never quite settles.
-    let visible = false;
-    ScrollTrigger.create({ trigger: extra, start: 'top bottom', end: 'bottom top', onToggle: (st) => (visible = st.isActive) });
-    gsap.ticker.add((time) => {
-      if (!visible) return;
-      extraChars.forEach((c, i) => {
-        c.style.fontWeight = (600 + 280 * Math.sin(time * 2 - i * 0.45)).toFixed(0);
-      });
     });
   }
 

@@ -3,14 +3,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { $, $$, splitChars, fitText, lerp, canHover, reduced } from '../utils.js';
 
 /*
- * Hero: the name is set edge to edge, one fitted line per word. A square blue
- * lens follows the cursor and magnifies what's under it, redrawn in a light
- * italic (a take on Codrops' mouse-following lens). Without a mouse the lens
- * drifts on its own. Scrolling away lifts every letter at its own speed.
+ * Hero: the name is set edge to edge, one fitted line per word. A square black
+ * lens follows the cursor and magnifies what's under it, in negative
+ * (a take on Codrops' mouse-following lens). Without a mouse the lens drifts
+ * on its own. Scrolling away slides the two lines up into their masks.
  */
-
-// Deterministic per-letter speeds so both layers of the name move together.
-const speed = (i) => 0.35 + ((Math.sin(i * 12.9898) * 43758.5453) % 1 + 1) % 1;
 
 export function initHero() {
   const hero = $('.hero');
@@ -30,13 +27,14 @@ export function initHero() {
   initCoords($('[data-coords]', hero));
 
   if (!reduced) {
-    // Scroll away: the letters lift off at different speeds, the rest drifts up slower.
     const tl = gsap.timeline({
       scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.4 },
       defaults: { ease: 'none' },
     });
-    tl.to(mainChars, { yPercent: (i) => -speed(i) * 110 }, 0)
-      .to(lensChars, { yPercent: (i) => -speed(i) * 110 }, 0)
+    // Each line of the name slides up into its mask, the second a touch slower.
+    const lineOf = (chars) => (i, c) => (c.closest('.hero__line') === c.closest('.hero__name').firstElementChild ? -100 : -70);
+    tl.to(mainChars, { yPercent: lineOf(mainChars) }, 0)
+      .to(lensChars, { yPercent: lineOf(lensChars) }, 0)
       .to(tag, { y: () => -window.innerHeight * 0.18 }, 0)
       .to(meta, { y: () => -window.innerHeight * 0.1 }, 0);
 

@@ -1,34 +1,17 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Matter from 'matter-js';
-import { $, $$, splitChars, rand, reduced } from '../utils.js';
+import { $, $$, rand } from '../utils.js';
 
 const { Engine, Bodies, Body, Composite, Constraint } = Matter;
 
 /*
  * Expertise: a physics playground on graph paper. Every skill is a tag that drops
  * into the box when you arrive; grab them, throw them, shake the box. Hovering
- * the legend makes the matching tag jump. The title's weight ripples with the scroll.
+ * the legend makes the matching tag jump.
  */
 export function initExpertise() {
   const section = $('#expertise');
-
-  // Title: a wave of font-weight travels through the letters as you scroll.
-  const title = $('[data-weight-wave]', section);
-  const chars = splitChars(title);
-  if (!reduced) {
-    ScrollTrigger.create({
-      trigger: title,
-      start: 'top bottom',
-      end: 'bottom top',
-      onUpdate: (self) => {
-        const p = self.progress * 14;
-        chars.forEach((c, i) => {
-          c.style.fontWeight = (330 + 520 * (0.5 + 0.5 * Math.sin(p - i * 0.28))).toFixed(0);
-        });
-      },
-    });
-  }
 
   initPlayground(section);
 }

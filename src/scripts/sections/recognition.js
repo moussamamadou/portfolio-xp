@@ -4,8 +4,8 @@ import { $, $$, reduced } from '../utils.js';
 
 /*
  * Recognition: a pile of (very) fake certificates. The section pins, and the
- * scroll tears each certificate off the top of the pile like a page from a pad:
- * it wipes upward and lifts away. Whichever one is on top gets its jury scores
+ * scroll wipes each certificate off the top of the pile, upward, like a page
+ * torn from a pad. Whichever one is on top gets its jury scores
  * counted in and its "not a real award" stamp slapped on.
  */
 export function initRecognition() {
@@ -60,7 +60,7 @@ export function initRecognition() {
       },
     });
     cards.slice(0, -1).forEach((card, i) => {
-      tl.to(card, { clipPath: 'inset(0% 0% 100% 0%)', y: -40, rotation: i % 2 ? 3 : -3, duration: 1 }, i + 0.4);
+      tl.to(card, { clipPath: 'inset(0% 0% 100% 0%)', duration: 1 }, i + 0.4);
     });
     tl.to({}, { duration: 0.6 });
     return () => gsap.set(cards, { clearProps: 'all' });

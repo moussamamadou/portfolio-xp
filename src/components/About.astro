@@ -14,27 +14,20 @@ const formula = ['Technology +', 'Design +', 'Motion +', 'Experimentation'];
 <section class="about section" id="about" aria-labelledby="about-title">
   <SectionHead num="01" label="About" note="Who am I?" />
 
-  <svg class="sr-filter" aria-hidden="true" width="0" height="0">
-    <filter id="warp" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.04" numOctaves="2" seed="4" result="noise" data-warp-noise />
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" data-warp-map />
-    </filter>
-  </svg>
-
-  <h2 class="about__title" id="about-title" data-warp>
-    <span class="about__title-line">The Developer</span>
-    <span class="about__title-line about__title-line--2">Designers <em>Love</em></span>
+  <h2 class="about__title" id="about-title">
+    <span class="about__title-line"><span data-fit data-reveal-line>The Developer</span></span>
+    <span class="about__title-line"><span data-fit data-reveal-line>Designers <em>Love</em></span></span>
   </h2>
 
   <div class="about__intro grid">
     <p class="about__kicker t-small">(Intro)</p>
-    <p class="about__lead" data-type>
+    <p class="about__lead" data-fill>
       I'm a software engineer who doesn't hate design, making me the unicorn designers adore. Whatever crazy idea they throw my way, my answer is always the same:
     </p>
   </div>
 
   <div class="about__yes">
-    <p class="about__yes-text" data-fit data-unfurl>“Yes, it's possible.”</p>
+    <p class="about__yes-line"><span class="about__yes-text" data-fit data-reveal-line>“Yes, it's possible.”</span></p>
     <p class="about__yes-note t-small grid"><span>*terms and conditions may apply to physics</span></p>
   </div>
 
@@ -43,7 +36,6 @@ const formula = ['Technology +', 'Design +', 'Motion +', 'Experimentation'];
       <p class="t-small story__kicker">(The story)</p>
       <h3 class="story__title">A rather unconventional route.</h3>
     </div>
-    <span class="story__marker" aria-hidden="true" data-story-marker></span>
     <ol class="story__rows">
       {
         route.map((stop, i) => (

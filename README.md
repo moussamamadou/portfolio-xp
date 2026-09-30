@@ -17,7 +17,7 @@ Requires Node 22.12+.
 
 ## Art direction
 
-Editorial and monochrome: a 12-column grid (4 on mobile), one typeface (Figtree, used from 300 to 900), small text sitting in grid cells, huge display type fitted edge to edge, hairline rules instead of cards and shadows. Blue is kept for accents and the Contact flood. Press `G` anywhere to see the grid.
+Editorial and monochrome, set entirely in uppercase: a 12-column grid (4 on mobile), one typeface (Figtree), small text sitting in grid cells, huge display type fitted edge to edge, hairline rules instead of cards and shadows. Black and white only; blue survives as a single tiny accent (the "Available for work" dot). Press `G` anywhere to see the grid.
 
 ## The loading screen
 
@@ -37,16 +37,16 @@ The footer also has a **Reset the drama** button. `Esc` or **Skip** ends any loa
 
 | Section | Interaction |
 | --- | --- |
-| Nav | Small editorial bar; links shuffle their letters on hover; a blue square marks the section you're in; the name folds to its initials after the hero; the mobile menu wipes down with rising links |
-| Hero | The name is fitted edge to edge; a square blue lens follows the cursor and magnifies the letters under it in light italic (it wanders on its own on touch); scrolling lifts each letter at its own speed |
-| About | The title settles out of an SVG turbulence warp; the intro types itself behind a blue caret; “Yes, it's possible.” unfurls from the baseline; the story is an index a blue square travels down; the formula's fitted lines slide in from alternate sides |
+| Nav | Small editorial bar; links shuffle their letters on hover; a small square marks the section you're in; the name folds to its initials after the hero; the mobile menu wipes down with rising links |
+| Hero | The name is fitted edge to edge; a square black lens follows the cursor and magnifies the letters under it in negative (it wanders on its own on touch); scrolling slides the two lines up into their masks |
+| About | One calm motion throughout: big lines rise out of their masks, the intro fills from grey to ink as you read, and each story row draws its rule before its text rises |
 | Work | A window in the heading grows on scroll until it pushes the words off screen, flicking through the projects; then an index where the centred row is in focus and hovering brings up a cover that trails and leans with the cursor |
-| Labs | A WebGL field of square dots that swell and turn blue near the cursor; “Labs” scans in letter by letter; spec sheets print out and can be thrown around the table |
-| Expertise | A physics playground on graph paper: skills drop in as tags you can grab, throw and shake; the legend makes tags jump; the title's weight ripples with the scroll |
-| Recognition | Fake certificates on a pinned pile, torn off one by one; jury scores count in and a “Not a real award” stamp lands on each |
-| Contact | Twelve blue columns drop in and flood the page; fitted headline lines rise, “extraordinary” keeps breathing; copy-to-clipboard with attitude; a marquee that follows your scroll direction |
+| Labs | A WebGL field of square dots that swell near the cursor; “Labs” scans in letter by letter; spec sheets print out and can be thrown around the table |
+| Expertise | A physics playground on graph paper: skills drop in as tags you can grab, throw and shake; the legend makes tags jump |
+| Recognition | Fake certificates on a pinned pile, wiped away one by one; jury scores count in and a “Not a real award” stamp lands on each |
+| Contact | Twelve black columns drop in and flood the page; fitted headline lines rise; copy-to-clipboard with attitude; a marquee that follows your scroll direction |
 
-Some of the motion borrows from Codrops experiments (mouse-following lens, scroll-driven SVG filters on text, on-scroll expanding image, clip-path menus), remixed for this layout.
+Some of the motion borrows from Codrops experiments (mouse-following lens, on-scroll expanding image, clip-path menus), remixed for this layout.
 
 `prefers-reduced-motion` turns off smooth scrolling, pinning and scrubbed motion, and uses the short loader.
 
