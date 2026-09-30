@@ -1184,13 +1184,24 @@ html:not(.js) .loader {
   opacity: 1;
 }
 
-.work__reel .cover__img {
+/* Covers show the whole screenshot (the boxes are 16:9 like the images);
+   only the small reel inside the Work title fills and crops. */
+.cover__img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   z-index: 1;
+}
+
+.work__reel .cover__img {
+  object-fit: cover;
+}
+
+/* Any sliver left by a screenshot that isn't exactly 16:9 reads as page margin. */
+.cover.has-img {
+  background: var(--paper);
 }
 
 .cover.has-img .cover__top,
@@ -1414,9 +1425,9 @@ html:not(.js) .loader {
   left: 0;
   top: 0;
   z-index: 30;
-  /* Same shape as the project screenshots (16:10), so nothing gets cropped away. */
+  /* Same shape as the project screenshots (16:9), so nothing gets cropped away. */
   width: clamp(300px, 30vw, 520px);
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   pointer-events: none;
   display: none;
 }
@@ -2505,7 +2516,7 @@ html:not(.js) .playground__bodies {
   .row__cover {
     display: block;
     margin: 12px var(--m) 32px;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
   }
   .row__cover .cover {
     height: 100%;
