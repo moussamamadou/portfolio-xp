@@ -77,6 +77,26 @@ export const projects = [
     link: 'https://www.historyofgraphicdesign.com/',
     art: 'swiss',
   },
+  {
+    num: '06',
+    title: 'Chery France',
+    kind: 'Website',
+    description: null,
+    role: TBD,
+    stack: ['Nuxt', 'GSAP', 'Tailwind', 'Sanity'],
+    link: 'https://www.cheryfrance.com/',
+    art: 'drive',
+  },
+  {
+    num: '07',
+    title: 'SATEP',
+    kind: 'Website',
+    description: null,
+    role: TBD,
+    stack: ['Webflow', 'GSAP', 'D3.js', 'Swup'],
+    link: 'https://www.satep.fr/',
+    art: 'data',
+  },
 ];
 
 export const labs = [

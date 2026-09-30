@@ -1517,6 +1517,45 @@ button:hover .roll .char,
 .project__visual:hover .art--swiss i:nth-child(1) { transform: scale(1.15); }
 .project__visual:hover .art--swiss i:nth-child(2) { transform: translateY(-8%) scaleY(1.1); }
 
+/* 06 — car brand: speed lines and a wheel */
+.art--drive {
+  background: var(--ink);
+}
+.art--drive i:nth-child(-n + 4) {
+  left: -10%;
+  height: 7%;
+  border-radius: 999px;
+  background: var(--blue);
+  transform: skewX(-30deg);
+}
+.art--drive i:nth-child(1) { top: 22%; width: 70%; }
+.art--drive i:nth-child(2) { top: 36%; width: 52%; background: #fff; }
+.art--drive i:nth-child(3) { top: 50%; width: 84%; }
+.art--drive i:nth-child(4) { top: 64%; width: 40%; background: var(--blue-soft); }
+.art--drive i:nth-child(5) { right: 14%; top: 30%; width: 28%; aspect-ratio: 1; border-radius: 50%; border: 10px solid #fff; }
+.art--drive i:nth-child(6) { right: 23.5%; top: 43%; width: 9%; aspect-ratio: 1; border-radius: 50%; background: var(--blue); }
+.project__visual:hover .art--drive i:nth-child(-n + 4) { transform: skewX(-30deg) translateX(18%); }
+.project__visual:hover .art--drive i:nth-child(5) { transform: rotate(180deg); }
+/* 07 — data: a bar chart that grows */
+.art--data {
+  background: var(--blue-soft);
+}
+.art--data i {
+  bottom: 14%;
+  width: 11%;
+  border-radius: 10px 10px 0 0;
+  background: var(--blue);
+  transform-origin: bottom;
+}
+.art--data i:nth-child(1) { left: 18%; height: 28%; background: var(--ink); }
+.art--data i:nth-child(2) { left: 31%; height: 46%; }
+.art--data i:nth-child(3) { left: 44%; height: 36%; background: #fff; }
+.art--data i:nth-child(4) { left: 57%; height: 62%; }
+.art--data i:nth-child(5) { left: 70%; height: 52%; background: var(--ink); }
+.art--data i:nth-child(6) { left: 12%; right: 12%; width: auto; height: 3px; border-radius: 0; background: var(--ink); bottom: calc(14% - 3px); }
+.project__visual:hover .art--data i:nth-child(odd):not(:last-child) { transform: scaleY(1.35); }
+.project__visual:hover .art--data i:nth-child(even):not(:last-child) { transform: scaleY(0.7); }
+
 @keyframes drift {
   to {
     transform: translate(18%, 14%) scale(1.1);
