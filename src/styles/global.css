@@ -7,7 +7,7 @@
   --bg: #f1f1ef;
   --paper: #fbfbfa;
   --ink: #0b0b0b;
-  --grey: #8e8e8a;
+  --grey: #6f6f6b;
   --mute: #c9c9c5;
   --line: rgba(11, 11, 11, 0.16);
   --white: #fff;
@@ -127,10 +127,10 @@ sup {
 }
 
 .t-small {
-  font-size: clamp(10.5px, 0.74vw, 12.5px);
-  line-height: 1.3;
+  font-size: clamp(11.5px, 0.82vw, 13.5px);
+  line-height: 1.35;
   font-weight: 550;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -160,6 +160,25 @@ body {
 
 .char.space {
   white-space: pre;
+}
+
+/* Split-text masks: wrapping text clips its letters word by word. */
+.is-masked .word {
+  overflow: hidden;
+  vertical-align: top;
+  padding-inline: 0.05em;
+  margin-inline: -0.05em;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.line-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.rline-in {
+  display: block;
 }
 
 /* Text link with a line that wipes through on hover */
@@ -669,7 +688,7 @@ html:not(.js) .loader {
   top: 0;
   left: var(--m);
   right: var(--m);
-  height: 1px;
+  height: 2px;
   background: var(--ink);
   transform-origin: left;
 }
@@ -686,9 +705,17 @@ html:not(.js) .loader {
   grid-column: 1 / 2;
 }
 
+/* The section's number and name read as a landmark when you skim the page. */
+.shead__num,
+.shead__label {
+  font-size: clamp(16px, 1.35vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+
 .shead__label {
   grid-column: 2 / 4;
-  font-weight: 700;
 }
 
 .shead__note {
@@ -810,38 +837,21 @@ html:not(.js) .loader {
   margin-left: -0.04em;
 }
 
-.hero__lens {
+.hero__gl {
   position: absolute;
   inset: 0;
-  overflow: hidden;
   z-index: 2;
-  background: var(--ink);
-  color: var(--white);
   pointer-events: none;
-  clip-path: inset(50% 50% 50% 50%);
-  display: none;
+  opacity: 0;
 }
 
-.js .hero__lens {
-  display: block;
+.hero__gl.is-on {
+  opacity: 1;
 }
 
-.hero__lens-inner {
-  position: absolute;
-  inset: 0;
-}
-
-.hero__name--lens {
-  color: var(--bg);
-}
-
-.hero__lens-label {
-  position: absolute;
-  left: 0;
-  top: 0;
-  padding: 8px 10px;
-  color: var(--white);
-  white-space: nowrap;
+/* Once the shader has the name, the DOM copy stays for screen readers only. */
+.hero__name.is-gl {
+  opacity: 0;
 }
 
 /* About ----------------------------------------------------------------- */
@@ -1270,7 +1280,7 @@ html:not(.js) .loader {
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 0.9;
-  color: var(--mute);
+  color: #a3a39e;
   transition: color 0.5s;
   overflow: hidden;
   padding-bottom: 0.08em;
@@ -1665,7 +1675,7 @@ html:not(.js) .loader {
 
 .labs {
   overflow: clip;
-  padding-bottom: 14vh;
+  padding-bottom: 6vh;
 }
 
 .labs__field {
@@ -2089,224 +2099,6 @@ html:not(.js) .playground__bodies {
   font-weight: 700;
 }
 
-/* Recognition ----------------------------------------------------------- */
-
-.recognition {
-  padding-top: 20vh;
-}
-
-.recognition__pin {
-  position: relative;
-  min-height: 100svh;
-  padding-top: calc(var(--nav-h) + 12px);
-  display: flex;
-  flex-direction: column;
-}
-
-.recognition__body {
-  flex: 1;
-  margin-top: 4vh;
-  align-items: stretch;
-}
-
-.recognition__head {
-  grid-column: 1 / 6;
-  display: flex;
-  flex-direction: column;
-}
-
-.recognition__title {
-  font-size: clamp(48px, 7.4vw, 140px);
-  font-weight: 750;
-  letter-spacing: -0.045em;
-  line-height: 0.84;
-}
-
-.rline {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.06em;
-  margin-bottom: -0.06em;
-}
-
-.rline > span {
-  display: inline-block;
-}
-
-.recognition__win {
-  color: var(--grey);
-}
-
-.recognition__copy {
-  margin-top: 4vh;
-  max-width: 30ch;
-  font-size: clamp(18px, 1.5vw, 26px);
-  font-weight: 550;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
-
-.recognition__legal {
-  margin-top: 16px;
-  max-width: 44ch;
-  color: var(--grey);
-}
-
-.recognition__index {
-  margin-top: auto;
-  padding-top: 4vh;
-}
-
-.recognition__index p {
-  display: flex;
-  gap: 16px;
-  padding: 6px 0;
-  border-top: 1px solid var(--line);
-  color: var(--grey);
-  transition: color 0.3s;
-}
-
-.recognition__index p.is-on {
-  color: var(--ink);
-}
-
-.recognition__index p.is-on span:first-child {
-  color: var(--ink);
-}
-
-.awards {
-  grid-column: 7 / 13;
-  position: relative;
-  height: min(72vh, 660px);
-  align-self: end;
-}
-
-.cert {
-  position: absolute;
-  inset: 0;
-  z-index: calc(10 - var(--i));
-}
-
-.cert__frame {
-  position: relative;
-  height: 100%;
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  outline: 1px solid var(--ink);
-  outline-offset: -8px;
-  padding: 22px 22px 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.cert:nth-child(2) .cert__frame {
-  background: var(--white);
-}
-
-.cert__top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.cert__badge {
-  margin-top: 3vh;
-  font-size: clamp(72px, 9vw, 170px);
-  font-weight: 750;
-  letter-spacing: -0.05em;
-  line-height: 0.78;
-  color: var(--ink);
-}
-
-.cert__badge-label {
-  margin-top: 8px;
-  font-weight: 700;
-}
-
-.cert__title {
-  margin-top: auto;
-  padding-top: 16px;
-  font-size: clamp(24px, 2.3vw, 42px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
-  max-width: 14ch;
-}
-
-.cert__scores {
-  margin-top: 18px;
-}
-
-.score {
-  border-top: 1px solid var(--line);
-}
-
-.score td {
-  padding: 5px 0;
-  vertical-align: middle;
-}
-
-.score__label {
-  width: 30%;
-}
-
-.score__bar {
-  position: relative;
-}
-
-.score__bar::before {
-  content: '';
-  display: block;
-  height: 5px;
-  background: var(--line);
-}
-
-.score__fill {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  margin-top: -2.5px;
-  height: 5px;
-  width: 100%;
-  background: var(--ink);
-  transform-origin: left;
-  transform: scaleX(0);
-}
-
-.score__value {
-  width: 48px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.cert__jury {
-  margin-top: 12px;
-  color: var(--grey);
-}
-
-.cert__stamp {
-  position: absolute;
-  right: 26px;
-  top: 24%;
-  padding: 6px 10px;
-  background: var(--ink);
-  color: var(--white);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  transform: rotate(-8deg);
-}
-
-.recognition__mention {
-  padding-block: 2vh;
-}
-
-.recognition__mention span {
-  grid-column: 7 / 13;
-  justify-self: end;
-  color: var(--grey);
-}
-
 /* Contact --------------------------------------------------------------- */
 
 .contact {
@@ -2447,16 +2239,20 @@ html:not(.js) .playground__bodies {
   letter-spacing: -0.045em;
   line-height: 0.85;
   padding-bottom: 0.08em;
+  overflow: hidden;
+  vertical-align: top;
 }
 
+/* Hover: every letter rolls up and a copy of itself rolls in from below. */
 .bigcta__text .char {
-  transition: transform 0.6s var(--ease-out);
-  transition-delay: calc(var(--ci) * 0.015s);
+  text-shadow: 0 1em 0 currentColor;
+  transition: transform 0.7s var(--ease-out);
+  transition-delay: calc(var(--ci) * 0.018s);
 }
 
 @media (hover: hover) {
   .bigcta:hover .bigcta__text .char {
-    transform: translateY(-0.06em) skewX(-8deg);
+    transform: translateY(-1em);
   }
 }
 
@@ -2742,33 +2538,6 @@ html:not(.js) .playground__bodies {
   .expertise__closing p,
   .expertise__closing a {
     grid-column: 1 / 5;
-    justify-self: start;
-  }
-
-  .recognition__head,
-  .awards,
-  .recognition__mention span {
-    grid-column: 1 / 5;
-  }
-  .recognition__body {
-    row-gap: 6vh;
-  }
-  .recognition__index {
-    display: none;
-  }
-  .awards {
-    height: auto;
-    display: grid;
-    gap: 16px;
-  }
-  .cert {
-    position: relative;
-    inset: auto;
-  }
-  .cert__frame {
-    min-height: 480px;
-  }
-  .recognition__mention span {
     justify-self: start;
   }
 

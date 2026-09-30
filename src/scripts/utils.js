@@ -1,3 +1,6 @@
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import SplitType from 'split-type';
 export const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
@@ -122,4 +125,47 @@ export function shuffle(el, text = el.dataset.text || el.textContent) {
     }
   };
   el._shuffle = requestAnimationFrame(frame);
+}
+
+/*
+ * Split-text reveal, the one text motion used across the page: letters rise
+ * out of a mask one after the other, left to right, when the text scrolls in.
+ * Pass `masked: true` for text that wraps; each word then clips its own letters.
+ * Returns the char spans so callers can reuse them.
+ */
+export function revealChars(els, { trigger, start = 'top 85%', stagger = 0.022, duration = 1.1, delay = 0, masked = false } = {}) {
+  const list = Array.isArray(els) ? els : [els];
+  const chars = list.flatMap((el) => {
+    if (masked) el.classList.add('is-masked');
+    return splitChars(el).filter((c) => !c.classList.contains('space'));
+  });
+  if (reduced || !chars.length) return chars;
+  gsap.set(chars, { yPercent: 110 });
+  ScrollTrigger.create({
+    trigger: trigger || list[0],
+    start,
+    once: true,
+    onEnter: () => gsap.to(chars, { yPercent: 0, duration, ease: 'expo.out', stagger, delay }),
+  });
+  return chars;
+}
+
+/* Paragraphs: each line rises out of its own mask. */
+export function revealLines(el, { start = 'top 88%', stagger = 0.08 } = {}) {
+  const lines = new SplitType(el, { types: 'lines', lineClass: 'rline-in' }).lines;
+  lines.forEach((line) => {
+    const mask = document.createElement('span');
+    mask.className = 'line-mask';
+    line.replaceWith(mask);
+    mask.appendChild(line);
+  });
+  if (reduced) return lines;
+  gsap.set(lines, { yPercent: 110 });
+  ScrollTrigger.create({
+    trigger: el,
+    start,
+    once: true,
+    onEnter: () => gsap.to(lines, { yPercent: 0, duration: 1.1, ease: 'expo.out', stagger }),
+  });
+  return lines;
 }

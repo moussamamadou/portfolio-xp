@@ -14,7 +14,6 @@ import { initAbout } from './sections/about.js';
 import { initWork } from './sections/work.js';
 import { initLabs } from './sections/labs.js';
 import { initExpertise } from './sections/expertise.js';
-import { initRecognition } from './sections/recognition.js';
 import { initContact } from './sections/contact.js';
 
 gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, Draggable, InertiaPlugin);
@@ -43,7 +42,6 @@ async function boot() {
   initWork();
   initLabs();
   initExpertise();
-  initRecognition();
   initContact(visit, lenis);
   // The nav watches every section, so it goes last, after the pins exist.
   const nav = initNav(lenis);

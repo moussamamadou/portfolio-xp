@@ -1,6 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { $, $$, lerp, clamp, canHover, reduced } from '../utils.js';
+import { $, $$, lerp, clamp, canHover, reduced, splitChars, revealChars } from '../utils.js';
 
 /*
  * Work:
@@ -22,7 +22,9 @@ function initGrow(section) {
   const intro = $('[data-work-intro]', section);
   const grow = $('[data-work-grow]', section);
   const covers = $$('.cover', grow);
-  const lines = $$('[data-work-line]', section);
+  // Heading words: letters rise out of their masks before the pin takes over.
+  const words = [...$$('[data-work-line] > span:not(.work__grow)', section), $$('[data-work-line]', section)[1]];
+  revealChars(words, { trigger: intro, start: 'top 75%', masked: true, stagger: 0.03 });
   let current = -1;
   let z = 1;
   const show = (i) => {
@@ -77,14 +79,16 @@ function initIndex(section) {
     });
     if (reduced) return;
     gsap.set(rule, { scaleX: 0 });
-    gsap.set(title, { yPercent: 105 });
+    title.classList.add('is-masked');
+    const chars = splitChars(title).filter((c) => !c.classList.contains('space'));
+    gsap.set(chars, { yPercent: 110 });
     ScrollTrigger.create({
       trigger: row,
       start: 'top 92%',
       once: true,
       onEnter: () => {
         gsap.to(rule, { scaleX: 1, duration: 1.2, ease: 'expo.inOut' });
-        gsap.to(title, { yPercent: 0, duration: 1.1, ease: 'expo.out', delay: 0.15 });
+        gsap.to(chars, { yPercent: 0, duration: 1.1, ease: 'expo.out', delay: 0.15, stagger: 0.014 });
       },
     });
     // Mobile covers open like a shutter as they come in.

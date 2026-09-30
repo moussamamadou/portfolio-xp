@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Matter from 'matter-js';
-import { $, $$, rand } from '../utils.js';
+import { $, $$, rand, revealChars } from '../utils.js';
 
 const { Engine, Bodies, Body, Composite, Constraint } = Matter;
 
@@ -12,6 +12,7 @@ const { Engine, Bodies, Body, Composite, Constraint } = Matter;
  */
 export function initExpertise() {
   const section = $('#expertise');
+  revealChars($('.expertise__title', section), { masked: true, stagger: 0.015 });
 
   initPlayground(section);
 }

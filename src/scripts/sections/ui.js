@@ -36,8 +36,6 @@ export function initCursor() {
     y(e.clientY);
     const target = e.target.closest?.('[data-cursor]');
     cursor.classList.toggle('on-blue', !!e.target.closest?.('.contact.is-blue, .menu'));
-    // Hide the square where the hero lens already follows the pointer.
-    cursor.classList.toggle('is-hidden', !target && !!e.target.closest?.('[data-hero-stage]'));
     if (target === current) return;
     current = target;
     if (target) {

@@ -2,11 +2,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Draggable } from 'gsap/Draggable';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import { $, $$, lerp, clamp, splitChars, fitText, canHover, reduced } from '../utils.js';
+import { $, $$, lerp, clamp, splitChars, fitText, canHover, reduced, revealChars } from '../utils.js';
 
 /*
  * Labs: the one place with WebGL. A field of tiny square dots that swell and turn
- * darker around the cursor, a title that scans in, and spec sheets that print out
+ * darker around the cursor, a title that scans in, a subtitle whose letters rise, and spec sheets that print out
  * and can be thrown around the table.
  */
 
@@ -159,15 +159,8 @@ export function initLabs() {
     );
   }
 
-  // The subtitle scrambles into place, and again whenever you poke it.
-  const sub = $('[data-scramble]', section);
-  const text = sub.textContent;
-  const scramble = () =>
-    gsap.to(sub, { duration: 1.4, scrambleText: { text, chars: 'ABCDEFGHKMNOPRSTUXZ/_+', revealDelay: 0.2, speed: 0.5 } });
-  if (!reduced) {
-    ScrollTrigger.create({ trigger: sub, start: 'top 85%', onEnter: scramble });
-    sub.addEventListener('pointerenter', scramble);
-  }
+  // The subtitle's letters rise in once the big title has landed.
+  revealChars($('[data-scramble]', section), { masked: true, start: 'top 88%', stagger: 0.02 });
 
   // Sheets print out: each one feeds down out of an invisible slot.
   const sheets = $$('[data-sheet]', section);

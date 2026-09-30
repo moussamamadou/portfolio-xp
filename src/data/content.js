@@ -18,7 +18,6 @@ export const nav = [
   { id: 'work', label: 'Work' },
   { id: 'labs', label: 'Labs' },
   { id: 'expertise', label: 'Expertise' },
-  { id: 'recognition', label: 'Recognition' },
   { id: 'contact', label: 'Contact' },
 ];
 
@@ -149,51 +148,5 @@ export const skillGroups = [
     id: 'nocode',
     title: 'The "No Code" That Actually Needs Code',
     items: [{ name: 'Webflow', note: "and yes, I'll customize it" }],
-  },
-];
-
-export const awards = [
-  {
-    body: 'The Awwwkwards',
-    badge: 'SOTD',
-    badgeLabel: 'Site of the Daydream',
-    title: 'Best Imaginary Portfolio Design',
-    year: '2023',
-    scores: [
-      ['Design', 9.2],
-      ['Usability', 8.4],
-      ['Creativity', 9.7],
-      ['Realness', 0.3],
-    ],
-    jury: 'Jury: my mom, my cat, one very supportive rubber duck',
-  },
-  {
-    body: 'FWA',
-    bodyLong: 'Friends Who Approve',
-    badge: 'FWA',
-    badgeLabel: 'Of the Day (allegedly)',
-    title: 'Most Fun Developer to Work With',
-    year: '2024',
-    scores: [
-      ['Vibes', 9.9],
-      ['Puns', 7.1],
-      ['Deadlines', 8.8],
-      ['Humility', 2.0],
-    ],
-    jury: 'Jury: every designer I said "yes, it\'s possible" to',
-  },
-  {
-    body: 'CSS Dream Awards',
-    badge: 'WOTD',
-    badgeLabel: 'Wish Of The Day',
-    title: 'Future Awwwards Winner',
-    year: 'Manifesting it for 2025',
-    scores: [
-      ['Ambition', 10],
-      ['Patience', 4.2],
-      ['Manifesting', 9.6],
-      ['Trophies', 0],
-    ],
-    jury: 'Jury: the universe (response pending)',
   },
 ];

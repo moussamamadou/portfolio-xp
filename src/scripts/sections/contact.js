@@ -1,12 +1,12 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { $, $$, splitChars, fitText, reduced } from '../utils.js';
+import { $, $$, splitChars, fitText, revealChars, revealLines, reduced } from '../utils.js';
 import { resetVisits } from './loader.js';
 
 /*
  * Contact, the payoff: after a whole page on paper, twelve black
  * columns drop in one after the other (the grid itself floods). The headline
- * lines rise out of their masks, and a marquee runs whichever way you're scrolling.
+ * letters rise out of their masks, and a marquee runs whichever way you're scrolling.
  */
 export function initContact(visit, lenis) {
   const section = $('#contact');
@@ -30,20 +30,13 @@ export function initContact(visit, lenis) {
     });
   }
 
-  // Headline: fitted lines that rise from their masks one after the other.
+  // Headline: fitted lines whose letters rise out of their masks.
   const lines = $$('[data-contact-line]', section);
   const big = $('.bigcta__text', section);
+  revealChars(lines, { start: 'top 85%', stagger: 0.02 });
   splitChars(big);
   fitText([...lines, big]);
-  if (!reduced) {
-    gsap.set(lines, { yPercent: 105 });
-    ScrollTrigger.create({
-      trigger: lines[0],
-      start: 'top 85%',
-      once: true,
-      onEnter: () => gsap.to(lines, { yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1 }),
-    });
-  }
+  revealLines($('.contact__lead p', section));
 
   // Copy the email address, with a bit of attitude.
   const copyBtn = $('[data-copy]', section);
