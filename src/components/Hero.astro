@@ -1,32 +1,41 @@
 ---
 import { projects } from '../data/content.js';
+
+// Two inline windows in the headline cycle through the project screenshots,
+// offset so they never show the same one.
+const reel = projects.filter((p) => p.image);
+const second = [...reel.slice(3), ...reel.slice(0, 3)];
 ---
 
-<section class="hero" id="top" aria-labelledby="hero-title">
-  <div class="hero__pin">
-    <p class="hero__meta mono" data-hero-meta>
-      <span>Creative developer</span>
-      <span>Independent</span>
-      <span class="hero__meta-end">Portfolio 2026</span>
-    </p>
-
-    <h1 class="hero__name display" id="hero-title" aria-label="Moussa Mamadou">
-      <span class="hero__line hero__line--a" aria-hidden="true"><span class="hero__word" data-hero-word>Moussa</span></span>
-      <span class="hero__line hero__line--b" aria-hidden="true"><span class="hero__word" data-hero-word>Mamadou</span></span>
-    </h1>
-
-    <figure class="hero__reel" data-reel>
-      <div class="hero__frame">
-        {projects.map((p, i) => (
-          <img src={p.image} alt="" data-reel-img decoding="async" loading={i < 2 ? 'eager' : 'lazy'} />
-        ))}
-      </div>
-    </figure>
-
-    <p class="hero__foot mono" data-hero-meta>
-      <span class="hero__tag">If you can dream it, I can code it (probably)</span>
-      <span class="hero__cap" aria-hidden="true"><span data-reel-num>01/{String(projects.length).padStart(2, '0')}</span> <span data-reel-title>{projects[0].title}</span></span>
-      <span>Scroll</span>
-    </p>
+<section class="hero" id="top" aria-label="Intro">
+  <div class="hero__top mono">
+    <p data-hero-meta>(Folio) ©2026</p>
+    <p data-hero-meta>Creative developer<br />Independent</p>
+    <p class="hero__coords" data-hero-meta>Based somewhere on Earth<br /><span data-clock>--:--:--</span> your time</p>
   </div>
+
+  <h1 class="hero__title" aria-label="Moussa Mamadou, creative developer. If you dream it, I code it (probably).">
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__words" data-hero-split>Moussa</span>
+      <span class="hero__win win" data-hero-win data-win>
+        {reel.map((p) => <img src={p.image} alt="" decoding="async" />)}
+      </span>
+      <span class="hero__words" data-hero-split>Mamadou</span>
+    </span>
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__note mono" data-hero-meta>Issue 26<br />/ Folio</span>
+      <span class="hero__words" data-hero-split>Creative Developer</span>
+    </span>
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__words" data-hero-split>If you dream it</span>
+      <span class="hero__win win" data-hero-win data-win>
+        {second.map((p) => <img src={p.image} alt="" decoding="async" />)}
+      </span>
+    </span>
+    <span class="hero__line" aria-hidden="true">
+      <span class="hero__words" data-hero-split>I code it</span>
+      <span class="hero__words hero__words--ghost" data-hero-split>(Probably)</span>
+      <span class="hero__note mono" data-hero-meta>Scroll<br />↓</span>
+    </span>
+  </h1>
 </section>

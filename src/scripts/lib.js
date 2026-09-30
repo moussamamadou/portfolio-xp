@@ -47,20 +47,29 @@ export function initRolls() {
   });
 }
 
-/**
- * Size a display word so it fills `avail` px at a given width axis value.
- * The width axis is then free to animate without the size changing.
- */
-export function fitW(el, avail, w = 125, max = Infinity) {
-  const prev = el.style.getPropertyValue('--w');
-  el.style.setProperty('--w', w);
+/** Size an inline-block text element so it fills its parent's content width. */
+export function fit(el, max = Infinity) {
   el.style.fontSize = '100px';
-  const width = el.getBoundingClientRect().width;
-  el.style.fontSize = `${Math.min(max, Math.floor(((100 * avail * 0.995) / width) * 10) / 10)}px`;
-  if (prev) el.style.setProperty('--w', prev);
-  else el.style.removeProperty('--w');
-  el.classList.add('is-fit');
+  const w = el.getBoundingClientRect().width;
+  const avail = el.parentElement.clientWidth;
+  el.style.fontSize = `${Math.min(max, Math.floor((100 * avail * 0.995) / w * 10) / 10)}px`;
 }
 
-/** Read a CSS length custom property from :root, in px. */
-export const cssPx = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
+/**
+ * The signature: screenshot windows set into headlines. Each keeps cycling
+ * through the projects, the next shot wiping up over the last.
+ */
+export function cycleWindows(wins, delay = 2) {
+  wins.forEach((win, w) => {
+    const imgs = [...win.querySelectorAll('img')];
+    if (imgs.length < 2) return;
+    let i = 0;
+    let z = 1;
+    gsap.delayedCall(delay + w * 0.6, function step() {
+      i = (i + 1) % imgs.length;
+      imgs[i].style.zIndex = ++z;
+      gsap.fromTo(imgs[i], { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.15 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 0.9, ease: 'expo.inOut' });
+      gsap.delayedCall(1.8, step);
+    });
+  });
+}

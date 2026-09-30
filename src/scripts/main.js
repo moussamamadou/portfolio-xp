@@ -4,14 +4,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import Lenis from 'lenis';
 
-import { $$, reduced, initRolls } from './lib.js';
+import { $, $$, reduced, initRolls } from './lib.js';
 import { initHero } from './hero.js';
-import { initAbout } from './about.js';
-import { initWork } from './work.js';
-import { initLabs } from './labs.js';
-import { initToolkit } from './toolkit.js';
-import { initContact } from './contact.js';
+import { initSections } from './sections.js';
 import { initChrome } from './chrome.js';
+import { initGL } from './gl.js';
 
 gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
 
@@ -32,12 +29,9 @@ async function boot() {
 
   initRolls();
   const hero = initHero();
-  initAbout();
-  initWork(lenis);
-  initLabs(lenis);
-  initToolkit(lenis);
-  initContact();
+  initSections();
   initChrome(lenis);
+  if (!reduced) initGL($('[data-gl]'), lenis);
   ScrollTrigger.refresh();
 
   // Fitted type depends on the viewport width: re-fit, then let ScrollTrigger re-measure.

@@ -1,52 +1,42 @@
 ---
 import { projects } from '../data/content.js';
+const live = (p) => p.link && p.link !== 'soon';
 ---
 
-<section class="work" id="work" aria-labelledby="work-title">
-  <header class="work__head">
-    <p class="kicker mono"><span>(02)</span><span>Work</span><span>{projects.length} projects</span></p>
-    <h2 class="work__title display" id="work-title">
-      <span class="work__a" data-work-a>Selected</span>
-      <span class="work__b" data-work-b>Work</span>
-    </h2>
-  </header>
+<section class="work section" id="work" aria-labelledby="work-title">
+  <p class="kicker mono"><span>(02)</span><span>Work</span><span>({String(projects.length).padStart(2, '0')}) Projects</span></p>
 
-  <div class="stack" style={`--n:${projects.length}`}>
-    {projects.map((p, i) => (
-      <>
-        <span class="stack__anchor" data-anchor aria-hidden="true" />
-        <article class="proj" style={`--i:${i}`} data-proj aria-labelledby={`proj-${p.num}`}>
-          <button type="button" class="proj__row mono" data-proj-row={i}>
-            <span class="proj__num">{p.num}</span>
-            <span class="proj__name">{p.title}</span>
-            <span class="proj__kind">{p.kind}</span>
-            <span class="proj__stack">{p.stack.join(', ')}</span>
-            <span class="proj__plus" aria-hidden="true">+</span>
-          </button>
-          <div class="proj__body">
-            <div class="proj__text">
-              <h3 class="proj__title display" id={`proj-${p.num}`}><span data-proj-title>{p.title}</span></h3>
-              <p class="proj__desc">{p.description}</p>
-              <dl class="proj__meta mono">
-                <div><dt>Type</dt><dd>{p.kind}</dd></div>
-                <div><dt>Role</dt><dd>{p.role}</dd></div>
-                <div><dt>Stack</dt><dd>{p.stack.join(', ')}</dd></div>
-              </dl>
-              {p.link === 'soon' ? (
-                <p class="proj__link proj__link--soon mono">Launching soon</p>
-              ) : (
-                <a class="proj__link mono" href={p.link} target="_blank" rel="noopener" data-cursor="Visit ↗">
-                  <span class="roll" data-roll>Visit the site</span> ↗
-                </a>
-              )}
-            </div>
-            <figure class="proj__media" data-proj-media>
-              <img src={p.image} alt={`${p.title} website`} style={`aspect-ratio:${p.ratio}`} loading="lazy" decoding="async" />
-            </figure>
-          </div>
-        </article>
-      </>
-    ))}
-    <div class="stack__tail" aria-hidden="true" />
-  </div>
+  <h2 class="work__title" id="work-title" aria-label="Selected works">
+    <span class="work__title-line" aria-hidden="true"><span data-work-split>Selected (Works)</span></span>
+  </h2>
+
+  <ol class="work__grid">
+    {
+      projects.map((p, i) => {
+        const Tag = live(p) ? 'a' : 'div';
+        return (
+          <li class={`tile tile--${i + 1}`} data-tile>
+            <Tag
+              class="tile__link"
+              {...(live(p) ? { href: p.link, target: '_blank', rel: 'noopener' } : {})}
+              data-cursor={live(p) ? 'Visit ↗' : 'Launching soon'}
+            >
+              <div class="tile__media" style={`aspect-ratio: ${p.ratio}`} data-tile-media>
+                <img src={p.image} alt={`${p.title} website`} loading="lazy" decoding="async" data-gl-img />
+              </div>
+              <div class="tile__caption">
+                <span class="tile__num mono">({p.num.padStart(3, '0')})</span>
+                <h3 class="tile__title">
+                  <span class="roll" data-roll>{p.title}</span>
+                </h3>
+                <span class="tile__kind mono">{p.kind}</span>
+                <span class="tile__stack mono">{p.stack.join(' · ')}</span>
+                <span class="tile__go mono">{live(p) ? 'Visit ↗' : 'Soon'}</span>
+              </div>
+            </Tag>
+          </li>
+        );
+      })
+    }
+  </ol>
 </section>

@@ -1,5 +1,5 @@
 ---
-import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource/anton';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
 import '../styles/global.css';
@@ -21,15 +21,14 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#eeede8" />
+    <meta name="theme-color" content="#f2f1ec" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <!-- Scroll choreography layout only when JS runs and motion is welcome; otherwise the page reads as a plain document. -->
+    <!-- Hide animated start states only when JS runs, so the page still reads without it. -->
     <script is:inline>
       document.documentElement.classList.add('js');
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
       if (history.scrollRestoration) history.scrollRestoration = 'manual';
     </script>
   </head>
