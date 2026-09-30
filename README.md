@@ -49,7 +49,7 @@ The footer also has a **Reset the drama** button. `Esc` skips any loader.
 All copy (projects, labs, skills, awards, links) lives in [`src/data/content.js`](src/data/content.js).
 Fields still waiting on real info are marked `TBD` and show as dashed placeholders on the page:
 
-- Role for Julien Calot, JOHNROOCKS, Le Marché des Argonautes, Chery France and SATEP, plus a one-line category for Chery France and SATEP (currently "Website")
+- A one-line category for Chery France and SATEP (currently "Website")
 - Direct CodePen / Webflow links for each Labs clonable (they point to the profiles for now)
 
 Stacks and links for Julien Calot, JOHNROOCKS, Le Marché des Argonautes, Chery France and SATEP come from moussamamadou.com. JOHNROOCKS and Florence Jeev show "Launching soon" (`link: 'soon'`).
