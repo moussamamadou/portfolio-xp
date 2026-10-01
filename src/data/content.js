@@ -12,11 +12,11 @@ export const person = {
 };
 
 export const nav = [
-  { id: 'about', label: 'About' },
-  { id: 'work', label: 'Work' },
-  { id: 'labs', label: 'Labs' },
-  { id: 'toolkit', label: 'Toolkit' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'about', label: 'About', caption: 'Who is this guy?' },
+  { id: 'work', label: 'Selected work', caption: 'Seven projects, shipped' },
+  { id: 'labs', label: 'Labs', caption: 'Small experiments on CodePen' },
+  { id: 'toolkit', label: 'Toolkit', caption: 'Tools of the trade' },
+  { id: 'contact', label: 'Contact', caption: 'The way to reach me' },
 ];
 
 // The unconventional route, in five stops.
@@ -41,7 +41,7 @@ export const projects = [
     image: `${IMG}/juliencalot.webp`,
     ratio: '720 / 407',
     kind: 'Artiste Peintre',
-    description: null,
+    description: 'Website for the painter Julien Calot. Webflow, with GSAP motion and PixiJS image effects.',
     role: 'Developer',
     stack: ['Webflow', 'GSAP', 'PixiJS'],
     link: 'https://www.juliencalot.com/',
@@ -52,7 +52,7 @@ export const projects = [
     image: `${IMG}/johnroocks.webp`,
     ratio: '1598 / 927',
     kind: 'Photographer',
-    description: null,
+    description: 'Portfolio for a photographer. Nuxt and Prismic, with Three.js and GSAP.',
     role: 'Developer',
     stack: ['Nuxt', 'GSAP', 'Three.js', 'Prismic'],
     link: 'soon',
@@ -63,7 +63,7 @@ export const projects = [
     image: `${IMG}/marcheargonautes.webp`,
     ratio: '1667 / 938',
     kind: 'Landing Page',
-    description: null,
+    description: 'Landing page for Le Marché des Argonautes, built in Webflow and animated with GSAP.',
     role: 'Developer',
     stack: ['Webflow', 'GSAP'],
     link: 'https://www.marche-argonautes.fr/',
@@ -75,7 +75,7 @@ export const projects = [
     ratio: '2865 / 1612',
     kind: 'Designer Portfolio',
     description:
-      'Florence is a creative director who needed a new portfolio. The objective was to create subtle animations that matched her personality and visual style.',
+      'Portfolio for a creative director, with subtle animations that match her personality and visual style.',
     role: 'Developer',
     stack: ['GSAP', 'Lenis', 'SplitType', 'Webflow'],
     link: 'soon',
@@ -87,7 +87,7 @@ export const projects = [
     ratio: '570 / 321',
     kind: 'Interactive Experience',
     description:
-      'An interactive deep dive into the evolution of graphic design, exploring its history through an interactive experience.',
+      'An interactive deep dive into the evolution of graphic design.',
     role: 'Developer',
     stack: ['Vanilla JavaScript', 'WebGL', 'Astro.js'],
     link: 'https://www.historyofgraphicdesign.com/',
@@ -98,7 +98,7 @@ export const projects = [
     image: `${IMG}/cheryfrance.webp`,
     ratio: '1200 / 630',
     kind: 'Website',
-    description: null,
+    description: 'The French site for the car brand Chery. Nuxt, Tailwind and Sanity, animated with GSAP.',
     role: 'Developer',
     stack: ['Nuxt', 'GSAP', 'Tailwind', 'Sanity'],
     link: 'https://www.cheryfrance.com/',
@@ -109,7 +109,7 @@ export const projects = [
     image: `${IMG}/satep.webp`,
     ratio: '1445 / 813',
     kind: 'Website',
-    description: null,
+    description: 'Website for SATEP. Webflow, with D3.js data visualisation and Swup page transitions.',
     role: 'Developer',
     stack: ['Webflow', 'GSAP', 'D3.js', 'Swup'],
     link: 'https://www.satep.fr/',

@@ -2,30 +2,20 @@
 import { labs, person } from '../data/content.js';
 ---
 
-<section class="labs section" id="labs" aria-labelledby="labs-title">
-  <p class="kicker mono"><span>(03)</span><span>Labs</span><span>Experiments on CodePen</span></p>
+<section class="sect labs" id="labs" aria-labelledby="labs-title">
+  <header class="sect__head">
+    <h2 class="big" id="labs-title" data-lines>(3) Labs</h2>
+    <p class="cap">Small experiments,<br />all on CodePen.</p>
+  </header>
 
-  <h2 class="labs__title" id="labs-title" data-lines>Where creativity runs wild</h2>
-
-  <ol class="labs__list">
-    {
-      labs.map((lab) => (
-        <li class="lab" data-lab>
-          <a class="lab__link" href={lab.codepen ?? person.codepen} target="_blank" rel="noopener" data-cursor="CodePen ↗">
-            <span class="lab__rule" aria-hidden="true" />
-            <span class="lab__num mono">(L{lab.num})</span>
-            <span class="lab__title">{lab.title}</span>
-            <span class="lab__tools mono">{lab.tools.join(' · ')}</span>
-            <span class="lab__go mono">CodePen ↗</span>
-            <span class="lab__fill" aria-hidden="true">
-              <span class="lab__num mono">(L{lab.num})</span>
-              <span class="lab__title">{lab.title}</span>
-              <span class="lab__tools mono">{lab.tools.join(' · ')}</span>
-              <span class="lab__go mono">CodePen ↗</span>
-            </span>
-          </a>
-        </li>
-      ))
-    }
+  <ol class="rows">
+    {labs.map((l, i) => (
+      <li class="row rule" style={`--i:${i}`} data-rule>
+        <a class="row__head" href={l.codepen ?? person.codepen} target="_blank" rel="noopener">
+          <span class="row__label big"><span data-rise>(L{l.num}) {l.title}</span></span>
+          <span class="row__cap cap">{l.tools.join(', ')}<br />Open on CodePen ↗</span>
+        </a>
+      </li>
+    ))}
   </ol>
 </section>

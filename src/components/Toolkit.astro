@@ -2,26 +2,25 @@
 import { skillGroups } from '../data/content.js';
 ---
 
-<section class="toolkit section" id="toolkit" aria-labelledby="toolkit-title">
-  <p class="kicker mono"><span>(04)</span><span>Toolkit</span><span>Things I actually know how to use</span></p>
+<section class="sect toolkit" id="toolkit" aria-labelledby="toolkit-title">
+  <header class="sect__head">
+    <h2 class="big" id="toolkit-title" data-lines>(4) Toolkit</h2>
+    <p class="cap">Tools of the trade,<br />with honest notes.</p>
+  </header>
 
-  <h2 class="visually-hidden" id="toolkit-title">Toolkit</h2>
-
-  <div class="toolkit__groups">
-    {
-      skillGroups.map((g, gi) => (
-        <div class="group" data-group>
-          <h3 class="group__title mono">({String.fromCharCode(65 + gi)}) {g.title}</h3>
-          <ul class="group__list">
-            {g.items.map((s) => (
-              <li class="tool" data-tool>
-                <span class="tool__name"><span data-tool-name>{s.name}</span></span>
-                <span class="tool__note mono" data-tool-note>{s.note}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))
-    }
+  <div class="kit">
+    {skillGroups.map((g, gi) => (
+      <div class="kit__group rule" style={`--i:${gi}`} data-rule>
+        <h3 class="cap kit__title">{g.title}</h3>
+        <ul class="kit__list">
+          {g.items.map((t) => (
+            <li class="kit__item">
+              <span class="kit__name mid"><span data-rise>{t.name}</span></span>
+              <span class="cap kit__note">{t.note}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
   </div>
 </section>

@@ -2,31 +2,19 @@
 import { route, formula } from '../data/content.js';
 ---
 
-<section class="about section" id="about" aria-labelledby="about-title">
-  <p class="kicker mono"><span>(01)</span><span>About</span><span>Who am I?</span></p>
-
-  <h2 class="about__statement" id="about-title" data-lines>
-    A software engineer who doesn't hate design. Whatever idea you throw my way, the answer is: yes, it's possible<sup>*</sup>
-  </h2>
-
-  <div class="about__facts">
-    <p class="about__terms mono" data-rise>* Terms and conditions may apply to physics.</p>
-
-    <div class="fact" data-rise>
-      <h3 class="fact__label mono">(Route)</h3>
-      <ol class="fact__list mono">
-        {route.map((r, i) => (
-          <li><span class="fact__n">0{i + 1}</span><span>{r.title}</span></li>
-        ))}
-      </ol>
+<section class="slide slide--light about" id="about" aria-labelledby="about-title">
+  <img class="slide__bg" src="/textures/hide-light.jpg" alt="" aria-hidden="true" data-parallax />
+  <div class="slide__body">
+    <h2 class="about__title big" id="about-title" data-lines>A software engineer who doesn't hate design</h2>
+    <div class="about__notes cap" data-fade>
+      <p>Whatever idea you throw my way, the answer is: yes, it's possible*.</p>
+      <p>{route.map((r) => r.title).join(', then ')}.</p>
+      <p>{formula.join(' + ')} = creative development.</p>
+      <p>* Terms and conditions may apply to physics.</p>
     </div>
-
-    <div class="fact" data-rise>
-      <h3 class="fact__label mono">(Formula)</h3>
-      <p class="fact__formula mono">
-        {formula.map((f, i) => <span>{f}{i < formula.length - 1 ? ' +' : ''}</span>)}
-        <span class="fact__result">= Creative development</span>
-      </p>
-    </div>
+  </div>
+  <div class="slide__foot">
+    <p class="slide__num big" aria-hidden="true">(1)</p>
+    <p class="cap">Who is this guy?</p>
   </div>
 </section>

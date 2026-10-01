@@ -1,41 +1,27 @@
 ---
-import { projects } from '../data/content.js';
-
-// Two inline windows in the headline cycle through the project screenshots,
-// offset so they never show the same one.
-const reel = projects.filter((p) => p.image);
-const second = [...reel.slice(3), ...reel.slice(0, 3)];
+import { nav } from '../data/content.js';
 ---
 
-<section class="hero" id="top" aria-label="Intro">
-  <div class="hero__top mono">
-    <p data-hero-meta>(Folio) ©2026</p>
-    <p data-hero-meta>Creative developer<br />Independent</p>
-    <p class="hero__coords" data-hero-meta>Based somewhere on Earth<br /><span data-clock>--:--:--</span> your time</p>
+<section class="slide slide--dark cover" id="top" aria-labelledby="cover-title">
+  <img class="slide__bg" src="/textures/hide-dark.jpg" alt="" aria-hidden="true" data-parallax />
+  <h1 class="cover__title big" id="cover-title" data-lines>Moussa Mamadou</h1>
+  <div class="slide__foot cap" data-fade>
+    <p>Creative developer<br />Independent</p>
+    <p>If you can dream it,<br />I can code it (probably)</p>
   </div>
+</section>
 
-  <h1 class="hero__title" aria-label="Moussa Mamadou, creative developer. If you dream it, I code it (probably).">
-    <span class="hero__line" aria-hidden="true">
-      <span class="hero__words" data-hero-split>Moussa</span>
-      <span class="hero__win win" data-hero-win data-win>
-        {reel.map((p) => <img src={p.image} alt="" decoding="async" />)}
-      </span>
-      <span class="hero__words" data-hero-split>Mamadou</span>
-    </span>
-    <span class="hero__line" aria-hidden="true">
-      <span class="hero__note mono" data-hero-meta>Issue 26<br />/ Folio</span>
-      <span class="hero__words" data-hero-split>Creative Developer</span>
-    </span>
-    <span class="hero__line" aria-hidden="true">
-      <span class="hero__words" data-hero-split>If you dream it</span>
-      <span class="hero__win win" data-hero-win data-win>
-        {second.map((p) => <img src={p.image} alt="" decoding="async" />)}
-      </span>
-    </span>
-    <span class="hero__line" aria-hidden="true">
-      <span class="hero__words" data-hero-split>I code it</span>
-      <span class="hero__words hero__words--ghost" data-hero-split>(Probably)</span>
-      <span class="hero__note mono" data-hero-meta>Scroll<br />↓</span>
-    </span>
-  </h1>
+<section class="slide slide--grey index" id="index" aria-label="Index">
+  <ol class="index__list">
+    {
+      nav.map(({ id, label, caption }, i) => (
+        <li class="rule" style={`--i:${i}`} data-rule>
+          <a class="index__row" href={`#${id}`} data-scroll-to>
+            <span class="index__label big"><span data-rise>({i + 1}) {label}</span></span>
+            <span class="index__cap cap">{caption}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
 </section>

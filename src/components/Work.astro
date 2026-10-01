@@ -1,42 +1,32 @@
 ---
 import { projects } from '../data/content.js';
-const live = (p) => p.link && p.link !== 'soon';
 ---
 
-<section class="work section" id="work" aria-labelledby="work-title">
-  <p class="kicker mono"><span>(02)</span><span>Work</span><span>({String(projects.length).padStart(2, '0')}) Projects</span></p>
+<section class="sect work" id="work" aria-labelledby="work-title">
+  <header class="sect__head">
+    <h2 class="big" id="work-title" data-lines>(2) Selected work</h2>
+    <p class="cap">Seven projects, shipped.<br />Open one to see it whole.</p>
+  </header>
 
-  <h2 class="work__title" id="work-title" aria-label="Selected works">
-    <span class="work__title-line" aria-hidden="true"><span data-work-split>Selected (Works)</span></span>
-  </h2>
-
-  <ol class="work__grid">
-    {
-      projects.map((p, i) => {
-        const Tag = live(p) ? 'a' : 'div';
-        return (
-          <li class={`tile tile--${i + 1}`} data-tile>
-            <Tag
-              class="tile__link"
-              {...(live(p) ? { href: p.link, target: '_blank', rel: 'noopener' } : {})}
-              data-cursor={live(p) ? 'Visit ↗' : 'Launching soon'}
-            >
-              <div class="tile__media" style={`aspect-ratio: ${p.ratio}`} data-tile-media>
-                <img src={p.image} alt={`${p.title} website`} loading="lazy" decoding="async" data-gl-img />
-              </div>
-              <div class="tile__caption">
-                <span class="tile__num mono">({p.num.padStart(3, '0')})</span>
-                <h3 class="tile__title">
-                  <span class="roll" data-roll>{p.title}</span>
-                </h3>
-                <span class="tile__kind mono">{p.kind}</span>
-                <span class="tile__stack mono">{p.stack.join(' · ')}</span>
-                <span class="tile__go mono">{live(p) ? 'Visit ↗' : 'Soon'}</span>
-              </div>
-            </Tag>
-          </li>
-        );
-      })
-    }
+  <ol class="rows">
+    {projects.map((p, i) => (
+      <li class="row rule" style={`--i:${i}`} data-rule data-row>
+        <button type="button" class="row__head" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`p-${p.num}`} data-row-head>
+          <span class="row__label big"><span data-rise>({p.num}) {p.title}</span></span>
+          <span class="row__cap cap">{p.kind}<br />{p.link === 'soon' ? 'Launching soon' : p.stack.slice(0, 2).join(', ')}</span>
+        </button>
+        <div class="row__panel" id={`p-${p.num}`} data-row-panel data-open={i === 0 ? '' : undefined}>
+          <div class="row__inner">
+            <img src={p.image} alt={`${p.title} website`} style={`aspect-ratio:${p.ratio}`} loading="lazy" decoding="async" />
+            <div class="row__info cap">
+              <p>{p.description}</p>
+              <p>Role<br />{p.role}</p>
+              <p>Stack<br />{p.stack.join(', ')}</p>
+              {p.link === 'soon' ? <p>Launching soon</p> : <a href={p.link} target="_blank" rel="noopener">Visit the site ↗</a>}
+            </div>
+          </div>
+        </div>
+      </li>
+    ))}
   </ol>
 </section>
