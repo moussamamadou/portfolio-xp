@@ -1,6 +1,5 @@
 ---
-import '@fontsource-variable/figtree';
-import '@fontsource-variable/figtree/wght-italic.css';
+import '@fontsource-variable/inter-tight';
 import '../styles/global.css';
 
 interface Props {
@@ -20,12 +19,12 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f1f1ef" />
+    <meta name="theme-color" content="#dcdbd9" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <!-- Hide animated start states only when JS is running, so the page still reads without it. -->
+    <!-- Hide animated start states only when JS runs, so the page still reads without it. -->
     <script is:inline>
       document.documentElement.classList.add('js');
       if (history.scrollRestoration) history.scrollRestoration = 'manual';

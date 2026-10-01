@@ -1,0 +1,26 @@
+---
+import { skillGroups } from '../data/content.js';
+---
+
+<section class="sect toolkit" id="toolkit" aria-labelledby="toolkit-title">
+  <header class="sect__head">
+    <h2 class="big" id="toolkit-title" data-lines>(4) Toolkit</h2>
+    <p class="cap">Tools of the trade,<br />with honest notes.</p>
+  </header>
+
+  <div class="kit">
+    {skillGroups.map((g, gi) => (
+      <div class="kit__group rule" style={`--i:${gi}`} data-rule>
+        <h3 class="cap kit__title">{g.title}</h3>
+        <ul class="kit__list">
+          {g.items.map((t) => (
+            <li class="kit__item">
+              <span class="kit__name mid"><span data-rise>{t.name}</span></span>
+              <span class="cap kit__note">{t.note}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>

@@ -1,32 +1,27 @@
 ---
-const name = ['Moussa', 'Mamadou'];
+import { nav } from '../data/content.js';
 ---
 
-<section class="hero" id="top" aria-label="Intro">
-  <div class="hero__meta grid t-small">
-    <p class="hero__cell hero__cell--a" data-hero-meta>(Portfolio ©2026)</p>
-    <p class="hero__cell hero__cell--b" data-hero-meta>(00)<br />Intro</p>
-    <p class="hero__cell hero__cell--c" data-hero-meta>
-      Based somewhere on Earth<br /><span class="hero__coords" data-coords>00.0000° N, 00.0000° E</span>
-    </p>
-    <p class="hero__cell hero__cell--d" data-hero-meta>Scroll ↓</p>
+<section class="slide slide--dark cover" id="top" aria-labelledby="cover-title">
+  <img class="slide__bg" src="/textures/hide-dark.jpg" alt="" aria-hidden="true" data-parallax />
+  <h1 class="cover__title big" id="cover-title" data-lines>Moussa Mamadou</h1>
+  <div class="slide__foot cap" data-fade>
+    <p>Creative developer<br />Independent</p>
+    <p>If you can dream it,<br />I can code it (probably)</p>
   </div>
+</section>
 
-  <div class="hero__tagline grid">
-    <p class="hero__tag" data-hero-tag>
-      If You Can Dream It,<br />I Can Code It <span class="hero__probably">(Probably)</span>.
-    </p>
-  </div>
-
-  <div class="hero__stage" data-hero-stage>
-    <h1 class="hero__name" aria-label="Moussa Mamadou" data-hero-name>
-      {
-        name.map((w) => (
-          <span class="hero__line" aria-hidden="true">
-            <span class="hero__word" data-fit data-hero-word>{w}</span>
-          </span>
-        ))
-      }
-    </h1>
-  </div>
+<section class="slide slide--grey index" id="index" aria-label="Index">
+  <ol class="index__list">
+    {
+      nav.map(({ id, label, caption }, i) => (
+        <li class="rule" style={`--i:${i}`} data-rule>
+          <a class="index__row" href={`#${id}`} data-scroll-to>
+            <span class="index__label big"><span data-rise>({i + 1}) {label}</span></span>
+            <span class="index__cap cap">{caption}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
 </section>

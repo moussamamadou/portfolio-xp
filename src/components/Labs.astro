@@ -1,54 +1,21 @@
 ---
 import { labs, person } from '../data/content.js';
-import SectionHead from './SectionHead.astro';
 ---
 
-<section class="labs section" id="labs" aria-labelledby="labs-title">
-  <canvas class="labs__field" data-labs-field aria-hidden="true"></canvas>
-  <SectionHead num="03" label="Labs" note="Experiments on CodePen" count="(03)" />
+<section class="sect labs" id="labs" aria-labelledby="labs-title">
+  <header class="sect__head">
+    <h2 class="big" id="labs-title" data-lines>(3) Labs</h2>
+    <p class="cap">Small experiments,<br />all on CodePen.</p>
+  </header>
 
-  <h2 class="labs__title" id="labs-title">
-    <span class="labs__big-wrap"><span class="labs__big" data-fit data-labs-big>Labs</span></span>
-    <span class="labs__sub grid"><span data-scramble>Where Creativity Runs Wild</span></span>
-  </h2>
-
-  <div class="labs__intro grid">
-    <p class="t-small labs__hint">(Drag them.)</p>
-  </div>
-
-  <div class="labs__table" data-labs-table>
-    {
-      labs.map((lab, i) => (
-        <article class="sheet" data-sheet>
-          <div class="sheet__paper" data-sheet-paper data-cursor="Drag">
-            <div class="sheet__head t-small">
-              <span>Experiment {lab.num}/03</span>
-              <span>MM—LAB</span>
-            </div>
-            <h3 class="sheet__title">{lab.title}</h3>
-            <table class="sheet__tools t-small">
-              <tbody>
-                {lab.tools.map((t, j) => (
-                  <tr>
-                    <td>{String(j + 1).padStart(2, '0')}</td>
-                    <td>{t}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div class="sheet__links t-small">
-              <a href={lab.codepen ?? person.codepen} target="_blank" rel="noopener">View on CodePen ↗</a>
-            </div>
-            <span class="sheet__code" aria-hidden="true">{`0${i + 1}`}</span>
-          </div>
-        </article>
-      ))
-    }
-  </div>
-
-  <div class="labs__foot grid">
-    <div class="labs__profiles t-small">
-      <a href={person.codepen} target="_blank" rel="noopener" class="tlink" data-shuffle><span class="shuf">All experiments on CodePen</span> ↗</a>
-    </div>
-  </div>
+  <ol class="rows">
+    {labs.map((l, i) => (
+      <li class="row rule" style={`--i:${i}`} data-rule>
+        <a class="row__head" href={l.codepen ?? person.codepen} target="_blank" rel="noopener">
+          <span class="row__label big"><span data-rise>(L{l.num}) {l.title}</span></span>
+          <span class="row__cap cap">{l.tools.join(', ')}<br />Open on CodePen ↗</span>
+        </a>
+      </li>
+    ))}
+  </ol>
 </section>
